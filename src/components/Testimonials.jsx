@@ -2,7 +2,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { ArrowUpRight, Star } from "lucide-react";
+import { ArrowUpRight, Star, Zap } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Draggable } from "gsap/Draggable";
@@ -24,7 +24,8 @@ export default function Testimonials() {
   const headerRef = useRef(null);
   const badgeRef = useRef(null);
   const titleRef = useRef(null);
-  const descriptionRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const headingRef = useRef(null);
   const carouselRef = useRef(null);
   const trackRef = useRef(null);
   const ctaRef = useRef(null);
@@ -125,7 +126,7 @@ export default function Testimonials() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Set initial states
-      gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, ctaRef.current], {
+      gsap.set([badgeRef.current, titleRef.current, subtitleRef.current, headingRef.current, ctaRef.current], {
         opacity: 0,
         y: 50
       });
@@ -136,8 +137,8 @@ export default function Testimonials() {
           trigger: sectionRef.current,
           start: "top 80%",
           end: "bottom 20%",
-          toggleActions: "play none none none", // Play once and don't reverse
-          once: true // Ensure it only plays once
+          toggleActions: "play none none none",
+          once: true
         }
       });
 
@@ -149,14 +150,22 @@ export default function Testimonials() {
         ease: "power3.out"
       });
 
-      // Title and description animation with stagger
-      tl.to([titleRef.current, descriptionRef.current], {
+      // Title animations with stagger
+      tl.to([titleRef.current, subtitleRef.current], {
         y: 0,
         opacity: 1,
         duration: 0.9,
-        stagger: 0.2,
+        stagger: 0.1,
         ease: "power4.out"
       }, "-=0.4");
+
+      // Heading description animation
+      tl.to(headingRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.2");
 
       // CTA animation
       tl.to(ctaRef.current, {
@@ -166,15 +175,14 @@ export default function Testimonials() {
         ease: "back.out(1.2)"
       }, "-=0.2");
 
-      // EXACT SAME bouncing animation for badge as in About section
-      // This runs independently and continuously
+      // Continuous bouncing animation for badge
       gsap.to(badgeRef.current, {
         y: -5,
         duration: 2,
         repeat: -1,
         yoyo: true,
         ease: "power1.inOut",
-        delay: 1 // Start after initial animation
+        delay: 1
       });
 
       // Initialize carousel animation
@@ -202,7 +210,7 @@ export default function Testimonials() {
           }
         });
 
-        // Pause on hover - proper pause functionality
+        // Pause on hover
         trackRef.current.addEventListener('mouseenter', () => {
           if (animationRef.current && !isMobile) {
             animationRef.current.pause();
@@ -274,22 +282,36 @@ export default function Testimonials() {
     <section ref={sectionRef} className="py-24 bg-white relative overflow-hidden">
       {/* Minimal Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gray-100 rounded-full filter blur-3xl opacity-30"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gray-100 rounded-full filter blur-3xl opacity-20"></div>
+        <div className="absolute top-0 left-1/4 w-20 h-96 bg-gray-100 rounded-full filter blur-3xl opacity-20"></div>
+        <div className="absolute bottom-0 right-1/4 w-20 h-96 bg-gray-100 rounded-full filter blur-3xl opacity-20"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+        {/* Header - Updated to match reference style */}
         <div ref={headerRef} className="text-center mb-16">
-          <div ref={badgeRef} className="inline-flex items-center bg-gray-100 rounded-full px-4 py-2 mb-4">
-            <span className="w-2 h-2 bg-gray-900 rounded-full mr-2"></span>
-            <span className="text-sm font-manrope text-gray-700 tracking-wide">TESTIMONIALS</span>
+          {/* Floating Badge - Exact match */}
+          <div 
+            ref={badgeRef} 
+            className="inline-flex items-center bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            <span className="text-sm font-manrope font-medium tracking-wide">CLIENT TESTIMONIALS</span>
           </div>
-          <h2 ref={titleRef} className="font-marcellus text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-4">
+          
+          {/* Titles with animation */}
+          <h2 ref={titleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-4">
             What Our Clients Say
           </h2>
-          <p ref={descriptionRef} className="font-instrument text-lg text-gray-600 max-w-2xl mx-auto">
-            Real stories from the people and companies we've helped transform
+          <h2 ref={subtitleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-6">
+            <span className="relative">
+              About Riden Tech
+            </span>
+          </h2>
+          
+          {/* Heading with animation */}
+          <p ref={headingRef} className="font-instrument text-xl text-gray-600 max-w-2xl mx-auto">
+            Real stories from the people and companies we've helped transform through 
+            innovative technology solutions and dedicated partnership.
           </p>
         </div>
 
