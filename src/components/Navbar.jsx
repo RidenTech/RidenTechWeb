@@ -195,30 +195,26 @@ const Navbar = () => {
     }
   };
 
-  // FIXED: Handle mouse enter on nav item - closes previous and opens new
+  // Handle mouse enter on nav item
   const handleNavItemEnter = (title) => {
     clearHoverTimeout();
     if (window.innerWidth >= 1024) {
-      // Only update if it's a different dropdown
       if (activeDropdown !== title) {
-        // Remove underline from previous active dropdown
         if (activeDropdown) {
           handleUnderlineHover(`${activeDropdown}-desktop`, false);
         }
-        // Set new active dropdown
         setActiveDropdown(title);
         handleUnderlineHover(`${title}-desktop`, true);
       }
     }
   };
 
-  // FIXED: Handle mouse leave from nav item
+  // Handle mouse leave from nav item
   const handleNavItemLeave = () => {
     clearHoverTimeout();
     hoverTimeoutRef.current = setTimeout(() => {
       if (window.innerWidth >= 1024 && activeDropdown) {
         const dropdown = dropdownRefs.current[activeDropdown];
-        // Check if mouse is not over the dropdown
         if (!dropdown || !dropdown.matches(':hover')) {
           handleUnderlineHover(`${activeDropdown}-desktop`, false);
           setActiveDropdown(null);
@@ -228,30 +224,26 @@ const Navbar = () => {
     }, 100);
   };
 
-  // FIXED: Handle mouse enter on dropdown
+  // Handle mouse enter on dropdown
   const handleDropdownEnter = (title) => {
     clearHoverTimeout();
     if (window.innerWidth >= 1024) {
-      // If this dropdown is not the active one, update it
       if (activeDropdown !== title) {
-        // Remove underline from previous active dropdown
         if (activeDropdown) {
           handleUnderlineHover(`${activeDropdown}-desktop`, false);
         }
-        // Set new active dropdown
         setActiveDropdown(title);
         handleUnderlineHover(`${title}-desktop`, true);
       }
     }
   };
 
-  // FIXED: Handle mouse leave from dropdown
+  // Handle mouse leave from dropdown
   const handleDropdownLeave = (title) => {
     clearHoverTimeout();
     hoverTimeoutRef.current = setTimeout(() => {
       if (window.innerWidth >= 1024 && activeDropdown === title) {
         const navItem = document.querySelector(`[data-navitem="${title}"]`);
-        // Check if mouse is not over the nav item
         if (!navItem || !navItem.matches(':hover')) {
           handleUnderlineHover(`${title}-desktop`, false);
           setActiveDropdown(null);
@@ -259,6 +251,20 @@ const Navbar = () => {
       }
       hoverTimeoutRef.current = null;
     }, 100);
+  };
+
+  // Handle click on nav item with dropdown
+  const handleNavItemClick = (e, item) => {
+    if (item.href) {
+      // Navigate to the main page
+      window.location.href = item.href;
+    }
+  };
+
+  // Handle click on dropdown link
+  const handleDropdownLinkClick = () => {
+    handleUnderlineHover(`${activeDropdown}-desktop`, false);
+    setActiveDropdown(null);
   };
 
   // Prevent hydration mismatch
@@ -382,26 +388,31 @@ const Navbar = () => {
                 onMouseLeave={handleNavItemLeave}
               >
                 {item.dropdown ? (
-                  <button
-                    className={`flex items-center space-x-1 px-4 py-2 text-sm font-medium relative group font-manrope ${
-                      activeDropdown === item.title 
-                        ? "text-gray-900" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    <span>{item.title}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform duration-300 ${
-                        activeDropdown === item.title ? "rotate-180" : ""
-                      }`}
-                    />
+                  <div className="flex items-center">
+                    <Link
+                      href={item.href}
+                      className="px-4 py-2 text-sm font-medium relative group font-manrope text-gray-600 hover:text-gray-900"
+                      onClick={() => handleDropdownLinkClick()}
+                    >
+                      {item.title}
+                    </Link>
+                    <button
+                      className="p-2"
+                      onMouseEnter={() => handleNavItemEnter(item.title)}
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-300 ${
+                          activeDropdown === item.title ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
                     
                     {/* Hover underline effect */}
                     <span
                       ref={el => underlineRefs.current[`${item.title}-desktop`] = el}
                       className="absolute bottom-0 left-0 w-full h-0.5 bg-gray-900 transform scale-x-0"
                     ></span>
-                  </button>
+                  </div>
                 ) : (
                   <Link
                     href={item.href}
@@ -444,10 +455,7 @@ const Navbar = () => {
                                     key={service.title}
                                     href={service.href}
                                     className="group/link dropdown-item"
-                                    onClick={() => {
-                                      handleUnderlineHover(`${item.title}-desktop`, false);
-                                      setActiveDropdown(null);
-                                    }}
+                                    onClick={handleDropdownLinkClick}
                                   >
                                     <div className="flex items-center justify-between py-1.5 hover:bg-gray-50 px-2 -mx-2 rounded-sm transition-all duration-300">
                                       <span className="text-sm text-gray-700 group-hover/link:text-gray-900 font-instrument">
@@ -468,10 +476,7 @@ const Navbar = () => {
                               key={industry.title}
                               href={industry.href}
                               className="group dropdown-item"
-                              onClick={() => {
-                                handleUnderlineHover(`${item.title}-desktop`, false);
-                                setActiveDropdown(null);
-                              }}
+                              onClick={handleDropdownLinkClick}
                             >
                               <div className="flex items-center justify-between py-1.5 hover:bg-gray-50 px-2 -mx-2 rounded-sm transition-all duration-300">
                                 <span className="text-sm text-gray-700 group-hover:text-gray-900 font-instrument">
@@ -489,10 +494,7 @@ const Navbar = () => {
                               key={dropItem.title}
                               href={dropItem.href}
                               className="group dropdown-item"
-                              onClick={() => {
-                                handleUnderlineHover(`${item.title}-desktop`, false);
-                                setActiveDropdown(null);
-                              }}
+                              onClick={handleDropdownLinkClick}
                             >
                               <div className="py-1.5 hover:bg-gray-50 px-2 -mx-2 rounded-sm transition-all duration-300">
                                 <div className="flex justify-between items-start">
@@ -558,22 +560,28 @@ const Navbar = () => {
                 {item.dropdown ? (
                   <div>
                     {/* Mobile category header */}
-                    <button
-                      onClick={() => toggleMobileDropdown(item.title)}
-                      className="w-full flex items-center justify-between py-3 px-0 text-sm font-medium text-gray-600 hover:text-gray-900 transition-all duration-300 font-manrope relative group"
-                    >
-                      <span>{item.title}</span>
-                      <ChevronDown
-                        className={`w-4 h-4 text-gray-500 transition-all duration-500 ${
-                          mobileExpanded[item.title] ? "rotate-180" : ""
-                        }`}
-                      />
-                      {/* Bottom line that matches text width */}
-                      <span
-                        ref={el => underlineRefs.current[`${item.title}-mobile`] = el}
-                        className="absolute bottom-0 left-0 w-full h-0.5 bg-gray-200 transform scale-x-0"
-                      ></span>
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <Link
+                        href={item.href}
+                        className="py-3 px-0 text-sm font-medium text-gray-600 hover:text-gray-900 transition-all duration-300 font-manrope"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setMobileExpanded({});
+                        }}
+                      >
+                        {item.title}
+                      </Link>
+                      <button
+                        onClick={() => toggleMobileDropdown(item.title)}
+                        className="p-2"
+                      >
+                        <ChevronDown
+                          className={`w-4 h-4 text-gray-500 transition-all duration-500 ${
+                            mobileExpanded[item.title] ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
                     
                     {/* Collapsible dropdown items */}
                     <div
@@ -581,7 +589,7 @@ const Navbar = () => {
                       className="overflow-hidden"
                       style={{ height: 0, opacity: 0 }}
                     >
-                      <div className="space-y-1 pt-3">
+                      <div className="space-y-1 pt-3 pl-4">
                         {item.dropdown.map((dropItem) => (
                           <Link
                             key={dropItem.title}
@@ -606,11 +614,6 @@ const Navbar = () => {
                     onClick={() => setIsOpen(false)}
                   >
                     {item.title}
-                    {/* Bottom line that matches text width */}
-                    <span
-                      ref={el => underlineRefs.current[`${item.title}-mobile`] = el}
-                      className="absolute bottom-0 left-0 w-full h-0.5 bg-gray-200 transform scale-x-0"
-                    ></span>
                   </Link>
                 )}
               </div>

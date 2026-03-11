@@ -1,7 +1,7 @@
 // components/Services.jsx
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Code2 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -90,41 +90,91 @@ const SERVICES = [
   }
 ];
 
+const STATS = [
+  {
+    value: 250,
+    suffix: "+",
+    label: "Completed Projects"
+  },
+  {
+    value: 98,
+    suffix: "%",
+    label: "Happy Customers"
+  },
+  {
+    value: 10,
+    suffix: "+",
+    label: "Years Experience"
+  }
+];
+
 export default function Services() {
-  const [expanded, setExpanded] = useState(0);
+const [expanded, setExpanded] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [displayValues, setDisplayValues] = useState([250, 98, 10]); // Start with final values
   const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const badgeRef = useRef(null);
   const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
   const bottomSpanRef = useRef(null);
   const serviceItemsRef = useRef([]);
   const descriptionsRef = useRef({});
   const arrowsRef = useRef({});
+  const statsRef = useRef([]);
+  const statsAnimated = useRef(false);
+  const statsContainerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Massive centered title animation
-      gsap.fromTo(titleRef.current,
-        { 
-          y: 300, 
-          opacity: 0,
-          scale: 0.8
-        },
+      // Header animations - play once
+      gsap.fromTo(badgeRef.current,
+        { y: 30, opacity: 0 },
         { 
           y: 0, 
-          opacity: 1,
-          scale: 1,
-          duration: 1.5, 
-          ease: "power4.out",
+          opacity: 1, 
+          duration: 0.8, 
+          ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 70%",
-            end: "bottom 30%",
-            toggleActions: "play none none reverse"
+            start: "top 80%",
+            once: true
           }
         }
       );
 
-      // Bottom span animation with stagger
+      gsap.fromTo(titleRef.current,
+        { y: 50, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1,
+          duration: 1, 
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            once: true
+          }
+        }
+      );
+
+      gsap.fromTo(subtitleRef.current,
+        { y: 40, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          duration: 0.8, 
+          delay: 0.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            once: true
+          }
+        }
+      );
+
+      // Bottom span animation - play once
       gsap.fromTo(bottomSpanRef.current?.children || [],
         { y: 30, opacity: 0 },
         { 
@@ -136,14 +186,13 @@ export default function Services() {
           delay: 0.5,
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 60%",
-            end: "bottom 40%",
-            toggleActions: "play none none reverse"
+            start: "top 70%",
+            once: true
           }
         }
       );
 
-      // Service items stagger animation
+      // Service items stagger animation - play once
       gsap.fromTo(serviceItemsRef.current,
         { y: 50, opacity: 0 },
         { 
@@ -155,10 +204,49 @@ export default function Services() {
           delay: 0.6,
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 50%",
-            end: "bottom 50%",
-            toggleActions: "play none none reverse"
+            start: "top 60%",
+            once: true
           }
+        }
+      );
+STATS.forEach((stat, i) => {
+  if (!statsContainerRef.current) return;
+
+  gsap.to({ val: 0 }, {
+    val: stat.value,
+    duration: 2,
+    ease: "power1.out",
+    scrollTrigger: {
+      trigger: statsContainerRef.current,
+      start: "top 90%",
+      once: true
+    },
+    onUpdate: function() {
+      setDisplayValues(prev => {
+        const copy = [...prev];
+        copy[i] = Math.floor(this.targets()[0].val);
+        return copy;
+      })
+    }
+  });
+});
+      // Stats cards animation - only fade in, no number animation
+      gsap.fromTo(statsRef.current,
+        { 
+          y: 40, 
+          opacity: 0
+        },
+        { 
+          y: 0, 
+          opacity: 1,
+          duration: 0.8, 
+          stagger: 0.1,
+          ease: "power2.out",
+        scrollTrigger: {
+  trigger: statsContainerRef.current,
+  start: "top 90%",
+  once: true
+}
         }
       );
     }, sectionRef);
@@ -167,145 +255,154 @@ export default function Services() {
   }, []);
 
   // Handle hover-based expansion
-  const handleMouseEnter = (idx) => {
-    setHoveredIndex(idx);
-    
-    // Don't change expanded state on hover if already expanded
-    if (expanded !== idx) {
-      // Close previously expanded if any
-      if (expanded !== null) {
-        const prevDesc = descriptionsRef.current[expanded];
-        const prevArrow = arrowsRef.current[expanded];
-        
-        if (prevDesc) {
-          gsap.to(prevDesc, {
-            height: 0,
-            opacity: 0,
-            duration: 0.3,
-            ease: "power3.inOut",
-            onComplete: () => {
-              prevDesc.style.display = "none";
-            }
-          });
-        }
-        
-        if (prevArrow) {
-          gsap.to(prevArrow, {
-            rotation: 0,
-            duration: 0.3,
-            ease: "power3.inOut"
-          });
-        }
-      }
-      
-      // Open new on hover
-      const newDesc = descriptionsRef.current[idx];
-      const newArrow = arrowsRef.current[idx];
-      
-      if (newDesc) {
-        newDesc.style.display = "block";
-        newDesc.style.height = "auto";
-        const height = newDesc.scrollHeight;
-        newDesc.style.height = "0px";
-        
-        gsap.to(newDesc, {
-          height: height,
-          opacity: 1,
-          duration: 0.5,
-          ease: "power4.out",
-          onComplete: () => {
-            newDesc.style.height = "auto";
-          }
-        });
-        
-        const lines = newDesc.querySelectorAll('.description-line');
-        gsap.fromTo(lines,
-          { y: 15, opacity: 0 },
-          { 
-            y: 0, 
-            opacity: 1, 
-            duration: 0.3, 
-            stagger: 0.05,
-            delay: 0.2,
-            ease: "power3.out"
-          }
-        );
-      }
-      
-      if (newArrow) {
-        gsap.to(newArrow, {
-          rotation: 180,
-          duration: 0.3,
-          ease: "power3.inOut"
-        });
-      }
-      
-      setExpanded(idx);
-    }
-  };
+const handleMouseEnter = (idx) => {
+  setHoveredIndex(idx);
 
-  const handleMouseLeave = () => {
-    setHoveredIndex(null);
-    
-    // Don't close the first item (index 0) on mouse leave
-    if (expanded !== null && expanded !== 0) {
-      const currentDesc = descriptionsRef.current[expanded];
-      const currentArrow = arrowsRef.current[expanded];
-      
-      if (currentDesc) {
-        gsap.to(currentDesc, {
-          height: 0,
-          opacity: 0,
+  if (expanded !== idx) {
+    // Close previous
+    if (expanded !== null && expanded !== idx) {
+      const prevDesc = descriptionsRef.current[expanded];
+      const prevArrow = arrowsRef.current[expanded];
+      const prevItem = serviceItemsRef.current[expanded];
+
+      if (prevDesc) {
+        gsap.to(prevDesc, { height: 0, opacity: 0, duration: 0.45, ease: "power2.inOut" });
+      }
+
+      if (prevArrow) {
+        gsap.to(prevArrow, { rotation: 0, duration: 0.3, ease: "power3.inOut" });
+      }
+
+      if (prevItem) {
+        gsap.to(prevItem, {
+          paddingTop: "1.5rem",
+          paddingBottom: "1.5rem",
           duration: 0.3,
           ease: "power3.inOut",
-          onComplete: () => {
-            currentDesc.style.display = "none";
-          }
         });
       }
-      
-      if (currentArrow) {
-        gsap.to(currentArrow, {
-          rotation: 0,
-          duration: 0.3,
-          ease: "power3.inOut"
-        });
-      }
-      
-      setExpanded(0); // Reset to first item
     }
-  };
 
+    // Open new
+    const newDesc = descriptionsRef.current[idx];
+    const newArrow = arrowsRef.current[idx];
+    const newItem = serviceItemsRef.current[idx];
+
+    if (newDesc) {
+      newDesc.style.display = "block";
+      newDesc.style.height = "auto";
+      const height = newDesc.scrollHeight;
+      newDesc.style.height = "0px";
+
+      gsap.to(newDesc, {
+        height: height,
+        opacity: 1,
+        duration: 0.45,
+        ease: "power2.out",
+        onComplete: () => (newDesc.style.height = "auto"),
+      });
+
+      const lines = newDesc.querySelectorAll(".description-line");
+      gsap.fromTo(lines, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.05, delay: 0.2, ease: "power3.out" });
+    }
+
+    if (newArrow) {
+      gsap.to(newArrow, { rotation: 180, duration: 0.3, ease: "power3.inOut" });
+    }
+
+    if (newItem) {
+      gsap.to(newItem, {
+        paddingTop: "2.5rem",
+        paddingBottom: "2.5rem",
+        duration: 0.3,
+        ease: "power3.out",
+      });
+    }
+
+    setExpanded(idx);
+  }
+};
+const handleMouseLeave = () => {
+  setHoveredIndex(null);
+
+  if (expanded !== null) {
+    const currentDesc = descriptionsRef.current[expanded];
+    const currentArrow = arrowsRef.current[expanded];
+    const currentItem = serviceItemsRef.current[expanded];
+
+    if (currentDesc) {
+      gsap.to(currentDesc, {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power3.inOut",
+        onComplete: () => { currentDesc.style.display = "none"; }
+      });
+    }
+
+    if (currentArrow) {
+      gsap.to(currentArrow, {
+        rotation: 0,
+        duration: 0.3,
+        ease: "power3.inOut"
+      });
+    }
+
+    if (currentItem) {
+      gsap.to(currentItem, {
+        paddingTop: "1.5rem",
+        paddingBottom: "1.5rem",
+        duration: 0.3,
+        ease: "power3.inOut"
+      });
+    }
+
+    setExpanded(null); // Close any open item
+  }
+};
   return (
     <section ref={sectionRef} className="w-full bg-black text-white py-16 px-6 md:px-20 overflow-hidden relative">
- 
-      {/* Top Header - Centered */}
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Massive centered title */}
-        <div className="relative mb-16 flex justify-center">
-          <h1 
-            ref={titleRef} 
-            className="font-['Manrope'] text-[15vw] md:text-[15vw] lg:text-[19vw] font-black uppercase text-white leading-[0.85] tracking-tight text-center relative"
-          >
-            SERVICES
-          </h1>
-        </div>
-        
-        {/* Bottom Span with spaced items - centered */}
+      {/* Header */}
+      <div ref={headerRef} className="text-center mb-16">
         <div 
-          ref={bottomSpanRef}
-          className="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 w-full mt-8 pt-8 border-t border-gray-800"
+          ref={badgeRef}
+          className="inline-flex items-center bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
         >
-          <span className="font-['Manrope'] text-sm md:text-base text-gray-100 font-bold uppercase  tracking-wide hover:text-white transition-colors duration-300 cursor-default">UX/UI Design</span>
-          <span className="font-['Manrope'] text-sm md:text-base text-gray-100 font-bold uppercase  tracking-wide hover:text-white transition-colors duration-300 cursor-default">Brand Identity</span>
-          <span className="font-['Manrope'] text-sm md:text-base text-gray-100 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">Web Development</span>
-          <span className="font-['Manrope'] text-sm md:text-base text-gray-100 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">App Development</span>
-          <span className="font-['Manrope'] text-sm md:text-base text-gray-100 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">Marketing</span>
+          <Code2 className="w-4 h-4 mr-2" />
+          <span className="text-sm font-manrope font-medium tracking-wide">Expertise</span>
         </div>
+
+        <h2 
+          ref={titleRef}
+          className="font-marcellus text-5xl md:text-6xl text-white mb-4 leading-tight"
+        >
+          Your Needs, 
+          <br />
+          <span className="text-gray-400 italic">Our Expertise</span>
+        </h2>
+
+        <p 
+          ref={subtitleRef}
+          className="font-instrument text-gray-400 max-w-2xl mx-auto text-lg"
+        >
+          Comprehensive solutions tailored to your business needs
+        </p>
       </div>
 
-      {/* Service List - with better spacing */}
-      <div className="max-w-7xl mx-auto mt-24 relative z-10">
+      {/* Tags */}
+      <div 
+        ref={bottomSpanRef}
+        className="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 w-full mt-8 pt-8 border-t border-gray-800"
+      >
+        <span className="font-['Manrope'] text-xs md:text-sm text-gray-400 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">UX/UI Design</span>
+        <span className="font-['Manrope'] text-xs md:text-sm text-gray-400 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">Brand Identity</span>
+        <span className="font-['Manrope'] text-xs md:text-sm text-gray-400 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">Web Development</span>
+        <span className="font-['Manrope'] text-xs md:text-sm text-gray-400 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">App Development</span>
+        <span className="font-['Manrope'] text-xs md:text-sm text-gray-400 font-bold uppercase tracking-wide hover:text-white transition-colors duration-300 cursor-default">Marketing</span>
+      </div>
+
+      {/* Service List */}
+      <div className="max-w-7xl mx-auto mt-16 relative z-10">
         {SERVICES.map((service, idx) => {
           const isOpen = expanded === idx;
           const isHovered = hoveredIndex === idx;
@@ -314,16 +411,15 @@ export default function Services() {
             <div
               key={idx}
               ref={el => serviceItemsRef.current[idx] = el}
-              className={`group flex flex-col md:flex-row items-start md:items-center px-0 md:px-4 py-6 md:py-8 transition-all duration-500 cursor-pointer border-b border-gray-800/50 ${
-                isOpen ? "bg-gradient-to-r from-white/5 to-transparent" : ""
+              className={`group flex flex-col md:flex-row items-start md:items-center px-0  transition-all duration-500 cursor-pointer border-b border-gray-800/50 ${
+                isOpen ? "bg-gradient-to-r from-white/5 to-transparent md:px-3 py-4 md:py-5 " : " md:px-4 py-6 md:py-8"
               }`}
               onMouseEnter={() => handleMouseEnter(idx)}
               onMouseLeave={handleMouseLeave}
             >
-              {/* Left: Number - LARGE */}
               <div className="flex flex-col items-start justify-start md:w-2/12 w-full text-left mb-2 md:mb-0">
                 <span 
-                  className={`font-['Marcellus'] text-5xl md:text-7xl lg:text-8xl font-bold tracking-widest transition-all duration-500 ${
+                  className={`font-['Marcellus'] text-3xl md:text-4xl lg:text-5xl font-bold tracking-widest transition-all duration-500 ${
                     isOpen ? "text-white scale-110" : isHovered ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
@@ -331,10 +427,9 @@ export default function Services() {
                 </span>
               </div>
 
-              {/* Center: Title - larger and bolder */}
               <div className="flex flex-col justify-center md:w-6/12 w-full pl-0 md:pl-4 pr-0 md:pr-8">
                 <span 
-                  className={`font-['Instrument_Sans'] text-2xl md:text-3xl lg:text-4xl font-medium w-full transition-all duration-500 ${
+                  className={`font-['Instrument_Sans'] text-xl md:text-2xl lg:text-3xl font-medium w-full transition-all duration-500 ${
                     isOpen ? "text-white" : isHovered ? "text-gray-200" : "text-gray-400"
                   }`}
                 >
@@ -342,41 +437,37 @@ export default function Services() {
                 </span>
               </div>
 
-              {/* Right: Arrow & Description */}
               <div className="flex flex-col items-end justify-start md:w-4/12 w-full mt-2 md:mt-0">
                 <div className="flex flex-col items-end w-full">
-                  {/* Arrow with rotation animation */}
                   <div 
                     ref={el => arrowsRef.current[idx] = el}
                     className="mb-3 transform-gpu"
                     style={{ transform: `rotate(${isOpen ? 180 : 0}deg)` }}
                   >
                     {isOpen ? (
-                      <ArrowUpRight className={`w-8 h-8 transition-all duration-300 ${
+                      <ArrowUpRight className={`w-6 h-6 transition-all duration-300 ${
                         isOpen ? "text-white" : "text-gray-600"
                       }`} />
                     ) : (
-                      <ArrowDownRight className={`w-8 h-8 transition-all duration-300 ${
+                      <ArrowDownRight className={`w-6 h-6 transition-all duration-300 ${
                         isOpen ? "text-white" : isHovered ? "text-gray-400" : "text-gray-600"
                       }`} />
                     )}
                   </div>
 
-                  {/* Description with smooth height animation */}
                   <div
                     ref={el => descriptionsRef.current[idx] = el}
                     className="w-full overflow-hidden"
                     style={{ 
                       height: isOpen ? "auto" : "0px",
                       opacity: isOpen ? 1 : 0,
-                      display: isOpen ? "block" : "none"
                     }}
                   >
-                    <div className="flex flex-col gap-3 mt-2">
+                    <div className="flex flex-col gap-2 mt-2">
                       {service.description.map((desc, i) => (
                         <p
                           key={i}
-                          className="description-line font-['Manrope'] text-gray-400 text-sm md:text-base leading-relaxed text-left"
+                          className="description-line font-['Manrope'] text-gray-400 text-xs md:text-sm leading-relaxed text-left"
                         >
                           {desc}
                         </p>
@@ -390,13 +481,24 @@ export default function Services() {
         })}
       </div>
 
-      {/* Bottom accent line */}
-      <div className="w-full mt-16 h-px bg-gray-800 "></div>
-{/* {stats} */}
-
-      <div className="grid grid-cols-4">
-
-
+    
+      
+      {/* Stats Cards */}
+      <div ref={statsContainerRef} className="max-w-7xl mx-auto mt-16 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {STATS.map((stat, index) => (
+          <div
+            key={index}
+            ref={el => statsRef.current[index] = el}
+            className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-center border border-gray-700 hover:border-gray-500 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-900/50"
+          >
+            <div className="font-['Marcellus'] text-5xl md:text-6xl font-bold text-white mb-2">
+              {displayValues[index]}{stat.suffix}
+            </div>
+            <div className="font-['Manrope'] text-gray-400 text-lg uppercase tracking-wide">
+              {stat.label}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

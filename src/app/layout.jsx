@@ -2,6 +2,7 @@
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Footer from '@/components/Footer';
+import CTA from "@/components/CTA";
 
 export default function RootLayout({ children }) {
   return (
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
         <main className="pt-20">
           {children}
         </main>
+        <CTA/>
         <Footer/>
       </body>
     </html>
