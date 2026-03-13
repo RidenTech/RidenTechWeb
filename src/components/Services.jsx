@@ -328,9 +328,9 @@ export default function Services() {
 
         <h2
           ref={titleRef}
-          className="font-manrope font-bold text-4xl md:text-5xl text-white mb-4 leading-tight"
+          className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-white mb-4 leading-tight"
         >
-          Your Needs, <span className="text-gray-400 italic">Our Expertise</span>
+          Your Needs, <span className="text-gray-400 ">Our Expertise</span>
         </h2>
 
         <p
@@ -370,7 +370,7 @@ export default function Services() {
             >
               <div className="flex flex-col items-start justify-start md:w-2/12 w-full text-left mb-2 md:mb-0">
                 <span
-                  className={`font-['Marcellus'] text-3xl md:text-4xl lg:text-5xl font-bold tracking-widest transition-all duration-500 ${isOpen ? "text-white scale-110" : isHovered ? "text-gray-300" : "text-gray-700"
+                  className={`font-['manrope'] text-3xl md:text-4xl lg:text-5xl font-bold tracking-widest transition-all duration-500 ${isOpen ? "text-white scale-110" : isHovered ? "text-gray-300" : "text-gray-700"
                     }`}
                 >
                   {String(idx + 1).padStart(2, "0")}

@@ -98,8 +98,8 @@ const ImageSection = () => {
         { opacity: 0, y: 40, scale: 0.95 },
         {
           opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power3.out", stagger: 0.1,
-          scrollTrigger: { 
-            trigger: statsContainerRef.current, 
+          scrollTrigger: {
+            trigger: statsContainerRef.current,
             start: "top 90%",
             toggleActions: "play none none reverse",
           },
@@ -144,10 +144,10 @@ const ImageSection = () => {
           {/* Badge */}
           <div
             ref={badgeRef}
-           className="inline-flex items-center bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
+            className="inline-flex items-center bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
           >
             <Zap className="w-4 h-4 mr-2 text-gray-100" />
-             <span className="text-sm font-manrope font-medium tracking-wide">
+            <span className="text-sm font-manrope font-medium tracking-wide">
               ABOUT RIDEN TECH
             </span>
           </div>
@@ -155,15 +155,15 @@ const ImageSection = () => {
           {/* Titles */}
           <h2
             ref={titleRef}
-            className="font-marcellus text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-2"
+            className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-2"
           >
             We're on a Mission to
           </h2>
           <h2
             ref={subtitleRef}
-            className="font-marcellus text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-6"
+            className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-6"
           >
-            Transform <span className="text-gray-400 italic">Digital</span>
+            Transform <span className="text-gray-400 ">Digital</span>
           </h2>
 
           {/* Subheading */}
@@ -208,18 +208,18 @@ const ImageSection = () => {
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             priority
           />
-          
+
           {/* Dark overlay */}
           <div
             className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-500"
           />
-          
+
           {/* Bottom gradient */}
           <div
             className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-black/60 to-transparent"
           />
 
-       
+
 
           {/* Image caption */}
           <div className="absolute bottom-6 right-6 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-manrope border border-white/20">
@@ -236,7 +236,7 @@ const ImageSection = () => {
               className="bg-white rounded-xl p-8 text-center border border-gray-200 shadow-sm hover:shadow-xl hover:border-gray-400 transition-all duration-300 group"
             >
               <div
-                className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-2"
+                className="font-manrope text-5xl md:text-6xl text-gray-900 mb-2"
               >
                 {displayValues[index]}{stat.suffix}
               </div>
@@ -245,7 +245,7 @@ const ImageSection = () => {
               >
                 {stat.label}
               </div>
-              
+
               {/* Decorative line on hover */}
               <div className="w-0 h-0.5 bg-black mt-4 mx-auto group-hover:w-16 transition-all duration-500"></div>
             </div>

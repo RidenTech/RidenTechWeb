@@ -2,7 +2,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Send, Facebook, Twitter, Instagram, Linkedin, Youtube, Sparkles } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Mail, Phone, MapPin, Send, Sparkles } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,6 +20,7 @@ export default function Footer() {
   const bigLogoRef = useRef(null);
   const privacyLinksRef = useRef(null);
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
 
   const [mounted, setMounted] = useState(false);
 
@@ -26,108 +30,72 @@ export default function Footer() {
 
   useEffect(() => {
     if (!mounted) return;
-    const ctx = gsap.context(() => {
-      // Set initial states for all elements
-      gsap.set([contentRef.current, newsletterRef.current, ...columnsRef.current, ...socialRefs.current, bigLogoRef.current, privacyLinksRef.current], {
-        opacity: 0,
-        y: 50
-      });
 
-      // Create master timeline with scroll trigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse"
-        }
-      });
+    // Targets to animate — visible by default, revealed on scroll
+    const revealTargets = [
+      newsletterRef.current,
+      ...columnsRef.current.filter(Boolean),
+      privacyLinksRef.current,
+    ].filter(Boolean);
 
-      // 1. Content container fade in
-      tl.to(contentRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out"
-      });
+    gsap.set(revealTargets, { opacity: 0, y: 35 });
+    gsap.set(bigLogoRef.current, { opacity: 0, y: 20 });
 
-      // 2. Newsletter section with bounce
-      tl.to(newsletterRef.current, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 1.2,
-        ease: "elastic.out(1, 0.5)"
-      }, "-=0.6");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Reveal newsletter + columns + privacy in stagger
+            gsap.to(revealTargets, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: "power3.out",
+            });
+            // Big logo fades in last
+            gsap.to(bigLogoRef.current, {
+              opacity: 1,
+              y: 0,
+              duration: 1.2,
+              delay: 0.4,
+              ease: "power4.out",
+            });
+            // Ambient sparkle pulse
+            gsap.to(".sparkle-icon", {
+              scale: 1.1,
+              rotate: 5,
+              duration: 2,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+              delay: 0.8,
+            });
+            // Ambient logo pulse
+            gsap.to(bigLogoRef.current, {
+              scale: 1.03,
+              duration: 4,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+              delay: 1.5,
+            });
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
 
-      // 3. Columns stagger with rotation and fade
-      tl.to(columnsRef.current, {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        duration: 1,
-        stagger: 0.15,
-        ease: "power3.out"
-      }, "-=0.4");
-
-      // 4. Social icons pop with rotation
-      tl.to(socialRefs.current, {
-        opacity: 1,
-        scale: 1,
-        rotate: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "back.out(1.7)"
-      }, "-=0.3");
-
-      // 5. Big logo dramatic reveal
-      tl.to(bigLogoRef.current, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 1.5,
-        ease: "power4.out"
-      }, "-=0.2");
-
-      // 6. Privacy links fade in
-      tl.to(privacyLinksRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out"
-      }, "-=0.4");
-
-      // Add continuous subtle animations
-
-      // Sparkle icon pulse
-      gsap.to(".sparkle-icon", {
-        scale: 1.1,
-        rotate: 5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-
-      // Big logo subtle pulse
-      gsap.to(bigLogoRef.current, {
-        scale: 1.05,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 2
-      });
-
-    }, footerRef);
+    if (footerRef.current) observer.observe(footerRef.current);
 
     return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach(t => {
-        if (t.trigger === footerRef.current) t.kill(true);
-      });
+      observer.disconnect();
+      gsap.killTweensOf([...revealTargets, bigLogoRef.current, ".sparkle-icon"]);
+      gsap.set([...revealTargets, bigLogoRef.current], { clearProps: "all" });
     };
-  }, [mounted]);
+  }, [mounted, pathname]);
+
 
   // Hover handlers for social icons
   const handleSocialEnter = (e) => {
@@ -225,33 +193,41 @@ export default function Footer() {
             ref={newsletterRef}
             className="mb-20 border-b border-gray-800 pb-16"
           >
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="sparkle-icon w-5 h-5 text-gray-200" />
-              <span className="font-['Manrope'] text-xs text-gray-100 tracking-wider">NEWSLETTER</span>
-            </div>
-            <h2 className="font-['Marcellus'] text-3xl md:text-4xl lg:text-5xl text-white mb-8 max-w-3xl leading-tight">
-              Get the latest tips for social media growth and marketing straight to your inbox!
-            </h2>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+              {/* Left: Badge + Title */}
+              <div className="flex-shrink-0 max-w-xl">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="sparkle-icon w-5 h-5 text-gray-200" />
+                  <span className="font-['Manrope'] text-xs text-gray-100 tracking-wider">NEWSLETTER</span>
+                </div>
+                <h2 className="font-['Manrope'] font-bold text-3xl md:text-4xl lg:text-5xl text-white leading-tight">
+                  Get the latest tips for social media growth and marketing straight to your inbox!
+                </h2>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl">
-              <input
-                type="email"
-                placeholder="jhon@example.com"
-                className="flex-1 px-6 py-4 bg-transparent border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 transition-all duration-300 font-['Manrope'] text-sm hover:border-gray-600"
-              />
-              <button
-                onMouseEnter={handleSubscribeEnter}
-                onMouseLeave={handleSubscribeLeave}
-                className="subscribe-btn group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-white/10 font-['Manrope'] text-sm font-medium"
-              >
-                <span className="relative z-10">Subscribe</span>
-                <Send className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-              </button>
+              {/* Right: Form */}
+              <div className="flex-shrink-0 w-full lg:max-w-xl">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <input
+                    type="email"
+                    placeholder="jhon@example.com"
+                    className="flex-1 px-6 py-4 bg-transparent border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 transition-all duration-300 font-['Manrope'] text-sm hover:border-gray-600"
+                  />
+                  <button
+                    onMouseEnter={handleSubscribeEnter}
+                    onMouseLeave={handleSubscribeLeave}
+                    className="subscribe-btn group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-white/10 font-['Manrope'] text-sm font-medium"
+                  >
+                    <span className="relative z-10">Subscribe</span>
+                    <Send className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                  </button>
+                </div>
+                <p className="font-['Manrope'] text-xs text-gray-300 mt-4">
+                  No spam. Unsubscribe anytime.
+                </p>
+              </div>
             </div>
-            <p className="font-['Manrope'] text-xs text-gray-300 mt-4">
-              No spam. Unsubscribe anytime.
-            </p>
           </div>
 
           {/* Links Grid */}
@@ -351,81 +327,88 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Bottom Bar */}
-          <div className="border-t border-gray-800 pt-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="font-['Manrope'] text-xs text-gray-100 order-2 md:order-1">
+          {/* Bottom Bar & Privacy Links */}
+          <div className="border-t border-gray-800 pt-6 relative z-[60] pointer-events-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+              <p className="font-['Manrope'] text-xs text-gray-400">
                 © {currentYear} RidenTech. All rights reserved.
               </p>
 
+              {/* Privacy Flex */}
+              <div
+                ref={privacyLinksRef}
+                className="flex items-center gap-6"
+              >
+                <Link
+                  href="/privacy"
+                  onMouseEnter={handleLinkEnter}
+                  onMouseLeave={handleLinkLeave}
+                  className="footer-link font-['Manrope'] text-xs text-gray-400 hover:text-white transition-colors duration-300 pointer-events-auto"
+                >
+                  Privacy
+                </Link>
+                <Link
+                  href="/terms"
+                  onMouseEnter={handleLinkEnter}
+                  onMouseLeave={handleLinkLeave}
+                  className="footer-link font-['Manrope'] text-xs text-gray-400 hover:text-white transition-colors duration-300 pointer-events-auto"
+                >
+                  Terms
+                </Link>
+                <Link
+                  href="/sitemap"
+                  onMouseEnter={handleLinkEnter}
+                  onMouseLeave={handleLinkLeave}
+                  className="footer-link font-['Manrope'] text-xs text-gray-400 hover:text-white transition-colors duration-300 pointer-events-auto"
+                >
+                  Sitemap
+                </Link>
+              </div>
+
               {/* Social Links */}
-              <div className="flex gap-4">
+              <div className="flex items-center gap-3">
                 {[
-                  { icon: <Facebook className="w-4 h-4" />, href: "#", label: "FB" },
-                  { icon: <Twitter className="w-4 h-4" />, href: "#", label: "TW" },
-                  { icon: <Instagram className="w-4 h-4" />, href: "#", label: "IG" },
-                  { icon: <Linkedin className="w-4 h-4" />, href: "#", label: "LI" },
-                  { icon: <Youtube className="w-4 h-4" />, href: "#", label: "YT" }
-                ].map((social, index) => (
+                  { Icon: FaFacebookF, href: "https://facebook.com", label: "Facebook", hoverColor: "#1877F2" },
+                  { Icon: FaXTwitter, href: "https://x.com", label: "X", hoverColor: "#ffffff" },
+                  { Icon: FaInstagram, href: "https://instagram.com", label: "Instagram", hoverColor: "#E1306C" },
+                  { Icon: FaLinkedinIn, href: "https://linkedin.com", label: "LinkedIn", hoverColor: "#0A66C2" },
+                  { Icon: FaYoutube, href: "https://youtube.com", label: "YouTube", hoverColor: "#FF0000" },
+                ].map(({ Icon, href, label, hoverColor }, index) => (
                   <a
                     key={index}
-                    href={social.href}
-                    ref={el => socialRefs.current[index] = el}
-                    onMouseEnter={handleSocialEnter}
-                    onMouseLeave={handleSocialLeave}
-                    className="w-10 h-10 border bg-white border-gray-800 hover:border-gray-600 rounded-full flex items-center justify-center text-gray-900 hover:text-white transition-all duration-300 hover:scale-110"
-                    aria-label={social.label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="relative z-[60] py-2 px-2 hover:bg-white/5 w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 transition-all duration-300 hover:scale-110 pointer-events-auto"
+                    onMouseEnter={e => {
+                      e.currentTarget.style.color = hoverColor;
+                      e.currentTarget.style.borderColor = hoverColor;
+                      e.currentTarget.style.boxShadow = `0 0 10px ${hoverColor}66`;
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.color = '';
+                      e.currentTarget.style.borderColor = '';
+                      e.currentTarget.style.boxShadow = '';
+                    }}
                   >
-                    {social.icon}
+                    <Icon className="w-5 h-5 pointer-events-none" />
                   </a>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* Large RIDEN Logo */}
-          <div
-            ref={bigLogoRef}
-            className="w-full text-center my-8"
-          >
-            <h1 className="font-['Manrope'] text-[20vw] md:text-[25vw] lg:text-[30vw] font-black uppercase text-white/10 hover:text-white/20 leading-none tracking-tight select-none transition-all duration-500 hover:scale-105">
-              RIDEN
-            </h1>
-          </div>
-
-          {/* Privacy Links */}
-          <div
-            ref={privacyLinksRef}
-            className="flex justify-center gap-6"
-          >
-            <Link
-              href="/privacy"
-              onMouseEnter={handleLinkEnter}
-              onMouseLeave={handleLinkLeave}
-              className="footer-link font-['Manrope'] text-xs text-gray-100 hover:text-white transition-colors duration-300"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms"
-              onMouseEnter={handleLinkEnter}
-              onMouseLeave={handleLinkLeave}
-              className="footer-link font-['Manrope'] text-xs text-gray-100 hover:text-white transition-colors duration-300"
-            >
-              Terms
-            </Link>
-            <Link
-              href="/sitemap"
-              onMouseEnter={handleLinkEnter}
-              onMouseLeave={handleLinkLeave}
-              className="footer-link font-['Manrope'] text-xs text-gray-100 hover:text-white transition-colors duration-300"
-            >
-              Sitemap
-            </Link>
-          </div>
         </div>
       </div>
-    </footer>
 
+      <div
+        ref={bigLogoRef}
+        className="w-full text-center mt-8 pb-4 pointer-events-none overflow-hidden"
+      >
+        <h1 className="font-['Manrope'] text-[20vw] md:text-[25vw] lg:text-[23vw] font-black uppercase text-white/10 hover:text-white/20 leading-[0.8] tracking-tight select-none transition-all duration-500 hover:scale-105 inline-block">
+          RIDEN
+        </h1>
+      </div>
+    </footer>
   );
 }

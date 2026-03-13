@@ -215,10 +215,10 @@ const About = () => {
           </div>
 
           {/* Titles with animation */}
-          <h2 ref={titleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-4">
+          <h2 ref={titleRef} className="font-manrope text-5xl md:text-6xl text-gray-900 mb-4">
             We're on a Mission to
           </h2>
-          <h2 ref={subtitleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-6">
+          <h2 ref={subtitleRef} className="font-manrope text-5xl md:text-6xl text-gray-900 mb-6">
             <span className="relative">
               Transform Digital
             </span>
@@ -270,15 +270,15 @@ const About = () => {
             {/* Stats Row with hover animations */}
             <div className="grid grid-cols-3 gap-4">
               <div ref={el => statsRef.current[0] = el} className="text-center cursor-pointer">
-                <div className="font-marcellus text-3xl text-gray-900">50+</div>
+                <div className="font-manrope text-3xl text-gray-900">50+</div>
                 <div className="font-instrument text-xs text-gray-500">Team Members</div>
               </div>
               <div ref={el => statsRef.current[1] = el} className="text-center cursor-pointer">
-                <div className="font-marcellus text-3xl text-gray-900">200+</div>
+                <div className="font-manrope text-3xl text-gray-900">200+</div>
                 <div className="font-instrument text-xs text-gray-500">Projects Done</div>
               </div>
               <div ref={el => statsRef.current[2] = el} className="text-center cursor-pointer">
-                <div className="font-marcellus text-3xl text-gray-900">98%</div>
+                <div className="font-manrope text-3xl text-gray-900">98%</div>
                 <div className="font-instrument text-xs text-gray-500">Happy Clients</div>
               </div>
             </div>

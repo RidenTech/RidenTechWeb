@@ -118,15 +118,7 @@ export default function WhyChooseUs() {
         "-=0.2"
       );
 
-      // Continuous floating animation for badge
-      gsap.to(badgeRef.current, {
-        y: -5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut",
-        delay: 1
-      });
+
 
     }, sectionRef);
 
@@ -160,9 +152,9 @@ export default function WhyChooseUs() {
           {/* Title */}
           <h2
             ref={titleRef}
-            className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-4"
+            className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-2"
           >
-            We Build <span className="text-gray-400 italic">Partnerships</span>
+            We Build <span className="text-gray-400">Partnerships</span>
           </h2>
 
           {/* Subtitle */}

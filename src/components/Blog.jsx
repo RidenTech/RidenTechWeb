@@ -260,10 +260,10 @@ export default function Blog() {
               {/* Title */}
               <h2
                 ref={titleRef}
-                className="font-marcellus text-7xl text-gray-900 mb-6 leading-[0.9]"
+                className="font-manrope font-bold text-5xl md:text-6xl text-gray-900 mb-4 leading-tight"
               >
-                Blogs &<br />
-                <span className="text-gray-700 italic">Insights</span>
+                Blogs & <br />
+                <span className="text-gray-700">Insights</span>
               </h2>
 
               {/* Description */}
@@ -333,7 +333,7 @@ export default function Blog() {
                     </div>
 
                     {/* TITLE */}
-                    <h3 className="font-marcellus text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-gray-700 transition-colors duration-300">
+                    <h3 className="font-instrument text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-gray-700 transition-colors duration-300">
                       {post.title}
                     </h3>
 
@@ -374,7 +374,7 @@ export default function Blog() {
 
             <h2
               ref={titleRef}
-              className="font-marcellus text-4xl md:text-5xl text-gray-900 mb-3 leading-tight"
+              className="font-instrument text-4xl md:text-5xl text-gray-900 mb-3 leading-tight"
             >
               Blogs & Insights
             </h2>
@@ -478,7 +478,7 @@ export default function Blog() {
                       </div>
 
                       {/* TITLE */}
-                      <h3 className="font-marcellus text-base font-bold text-gray-900 mb-2 line-clamp-2">
+                      <h3 className="font-instrument text-base font-bold text-gray-900 mb-2 line-clamp-2">
                         {post.title}
                       </h3>
 

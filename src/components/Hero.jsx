@@ -150,9 +150,9 @@ const Hero = () => {
             </div>
 
             {/* Main Heading - responsive text sizes */}
-            <h1 className="font-marcellus text-3xl md:text-4xl lg:text-6xl text-gray-900 leading-tight">
+            <h1 className="font-manrope text-3xl font-bold md:text-4xl lg:text-6xl text-gray-900 leading-tight">
               <span ref={el => headingLinesRef.current[0] = el} className="block">Transform Your</span>
-              <span ref={el => headingLinesRef.current[1] = el} className="block text-gray-700 italic">Business with</span>
+              <span ref={el => headingLinesRef.current[1] = el} className="block text-gray-700 ">Business with</span>
               <span ref={el => headingLinesRef.current[2] = el} className="block relative">
                 Innovative Software
               </span>

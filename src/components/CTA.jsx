@@ -2,6 +2,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +16,7 @@ export default function CTA() {
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const buttonRef = useRef(null);
+  const pathname = usePathname();
 
   const [mounted, setMounted] = useState(false);
 
@@ -24,69 +26,49 @@ export default function CTA() {
 
   useEffect(() => {
     if (!mounted) return;
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse"
-        }
-      });
 
-      // Content animation
-      tl.fromTo(contentRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
-      );
+    const elements = [badgeRef.current, titleRef.current, descriptionRef.current, buttonRef.current].filter(Boolean);
+    // Reset to invisible before observing
+    gsap.set(elements, { opacity: 0, y: 30 });
 
-      // Badge animation
-      tl.fromTo(badgeRef.current,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.6"
-      );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Staggered reveal
+            gsap.to(elements, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              stagger: 0.15,
+              ease: "power3.out",
+              clearProps: "transform"
+            });
+            // Floating badge after reveal
+            setTimeout(() => {
+              gsap.to(badgeRef.current, {
+                y: -4,
+                duration: 2,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+              });
+            }, 1200);
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
 
-      // Title animation
-      tl.fromTo(titleRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power4.out" },
-        "-=0.4"
-      );
-
-      // Description animation
-      tl.fromTo(descriptionRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.4"
-      );
-
-      // Button animation
-      tl.fromTo(buttonRef.current,
-        { y: 20, opacity: 0, scale: 0.95 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" },
-        "-=0.2"
-      );
-
-      // Continuous floating animation for badge
-      gsap.to(badgeRef.current, {
-        y: -3,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut",
-        delay: 1
-      });
-
-    }, sectionRef);
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
     return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach(t => {
-        if (t.trigger === sectionRef.current) t.kill(true);
-      });
+      observer.disconnect();
+      gsap.killTweensOf(elements);
+      gsap.set(elements, { clearProps: "all" });
     };
-  }, [mounted]);
+  }, [mounted, pathname]);
 
   if (!mounted) return <section ref={sectionRef} className="relative py-20 md:py-24 overflow-hidden" />;
 
@@ -130,9 +112,9 @@ export default function CTA() {
           {/* Title */}
           <h2
             ref={titleRef}
-            className="font-marcellus text-3xl md:text-4xl lg:text-5xl text-white mb-4"
+            className="font-manrope font-bold text-3xl md:text-5xl lg:text-6xl text-white mb-4"
           >
-            Ready to <span className="text-gray-400 italic">Launch?</span>
+            Ready to <span className="text-gray-400">Launch?</span>
           </h2>
 
           {/* Description */}

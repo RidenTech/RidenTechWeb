@@ -13,7 +13,6 @@ const AboutUs = () => {
   const sectionRef = useRef(null);
   const badgeRef = useRef(null);
   const titleRef = useRef(null);
-  const subtitleRef = useRef(null);
   const headingRef = useRef(null);
   const descriptionRef = useRef(null);
   const featuresRef = useRef([]);
@@ -70,7 +69,7 @@ const AboutUs = () => {
     window.addEventListener('resize', updateClipPath);
 
     // Set initial states
-    gsap.set([badgeRef.current, titleRef.current, subtitleRef.current, headingRef.current,
+    gsap.set([badgeRef.current, titleRef.current, headingRef.current,
     descriptionRef.current, ...featuresRef.current.filter(el => el),
     borderLineRef.current, ctaRef.current, imageRef.current], {
       opacity: 0,
@@ -98,7 +97,7 @@ const AboutUs = () => {
       }, 0.2); // 0.2s delay
 
       // Title and subtitle with staggered delay
-      masterTl.to([titleRef.current, subtitleRef.current], {
+      masterTl.to([titleRef.current], {
         y: 0,
         opacity: 1,
         duration: 0.9,
@@ -168,14 +167,7 @@ const AboutUs = () => {
         ease: "back.out(1.2)"
       }, 2.0); // 2.0s delay
 
-      // Continuous floating animation for badge (starts after reveal)
-      masterTl.to(badgeRef.current, {
-        y: -5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut"
-      }, "+=0.5");
+
 
       // Subtle floating animation for image (only on desktop, starts after reveal)
       if (window.innerWidth >= 1024) {
@@ -268,12 +260,10 @@ const AboutUs = () => {
           </div>
 
           {/* Titles with animation */}
-          <h2 ref={titleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-4 opacity-0">
+          <h2 ref={titleRef} className="font-manrope text-5xl md:text-6xl text-gray-900 font-bold mb-4 opacity-0">
             Your Success,
-          </h2>
-          <h2 ref={subtitleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-6 opacity-0">
             <span className="relative">
-              Our Priority.
+              Our  <span className="text-gray-400 "> Priority.</span>
             </span>
           </h2>
         </div>
@@ -329,7 +319,7 @@ const AboutUs = () => {
                     {feature.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-marcellus text-lg text-gray-900 mb-1">
+                    <h3 className="font-manrope text-lg text-gray-900 mb-1">
                       {feature.title}
                     </h3>
                     <p className="font-instrument text-sm text-gray-600 leading-relaxed">

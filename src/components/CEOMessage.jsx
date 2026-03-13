@@ -139,6 +139,39 @@ export default function CEOMessage() {
       ref={sectionRef}
       className="relative py-24 bg-white overflow-hidden"
     >
+      {/* Top Section */}
+      <div className="text-center mb-12">
+
+        {/* Badge */}
+        <div
+
+          className="inline-flex items-center bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
+        >
+          {/* <Zap className="w-4 h-4 mr-2 text-gray-100" /> */}
+          <span className="text-sm font-manrope font-medium tracking-wide">
+            ABOUT CEO
+          </span>
+        </div>
+
+        {/* Titles */}
+        <h2
+
+          className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-2"
+        >
+          Vision for Digital
+
+
+          <span className="text-gray-400 "> Growth</span>
+        </h2>
+
+        {/* Subheading */}
+        <p
+
+          className="font-manrope text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
+        >
+          We combine strategy, design, and technology to build impactful digital experiences that help businesses grow.  </p>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Column - Message (slides from left) */}
@@ -172,12 +205,12 @@ export default function CEOMessage() {
               ref={messageRef}
               className="space-y-6"
             >
-              <p className="font-instrument text-xl text-gray-700 leading-relaxed">
+              <p className="font-manrope text-xl text-gray-700 leading-relaxed">
                 &quot;Technology is not just about code and algorithms — it&apos;s about people,
                 their dreams, and the problems we solve together. Every line of code we write
                 is an opportunity to make someone&apos;s life better, easier, or more meaningful.&quot;
               </p>
-              <p className="font-instrument text-gray-600 leading-relaxed">
+              <p className="font-manrope text-gray-600 leading-relaxed">
                 When I founded Riden Tech over a decade ago, I envisioned a company where
                 innovation meets empathy, where technical excellence serves human needs.
                 Today, I&apos;m proud to lead a team that shares this vision — brilliant minds

@@ -100,15 +100,6 @@ export default function Technologies() {
         "-=0.2"
       );
 
-      // Continuous floating animation for badge
-      gsap.to(badgeRef.current, {
-        y: -5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut",
-        delay: 1
-      });
 
     }, sectionRef);
 
@@ -138,25 +129,27 @@ export default function Technologies() {
         <div className="text-center mb-16">
           {/* Badge */}
           <div
-            ref={badgeRef}
-            className="inline-flex items-center bg-gray-100 text-gray-700 rounded-full px-4 py-2 mb-4 border border-gray-200"
+            className="inline-flex items-center bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
           >
-            <span className="w-2 h-2 bg-gray-700 rounded-full mr-2"></span>
-            <span className="text-sm font-manrope tracking-wide">TECHNOLOGIES</span>
+            {/* <Zap className="w-4 h-4 mr-2 text-gray-100" /> */}
+            <span className="text-sm font-manrope font-medium tracking-wide">
+              TECHNOLOGIES
+            </span>
           </div>
+
 
           {/* Title */}
           <h2
             ref={titleRef}
-            className="font-marcellus text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-4"
+            className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-4"
           >
-            Our Tech <span className="text-gray-400 italic">Stack</span>
+            Our Tech <span className="text-gray-400 ">Stack</span>
           </h2>
 
           {/* Subtitle */}
           <p
             ref={subtitleRef}
-            className="font-instrument text-lg text-gray-600 max-w-2xl mx-auto"
+            className="font-manrope text-lg text-gray-600 max-w-2xl mx-auto"
           >
             Modern tools and frameworks we use to build exceptional digital experiences
           </p>
