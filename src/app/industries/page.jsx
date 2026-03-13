@@ -128,10 +128,7 @@ export default function IndustriesPage() {
   const hoverTl = useRef({});
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   const handleImageError = (industryId) => {

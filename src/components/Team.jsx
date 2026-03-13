@@ -99,6 +99,15 @@ export default function Team() {
         "-=0.2"
       );
 
+      // Floating animation for badge
+      gsap.to(badgeRef.current, {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        delay: 1
+      });
 
     }, sectionRef);
 

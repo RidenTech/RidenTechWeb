@@ -168,7 +168,25 @@ const AboutUs = () => {
         ease: "back.out(1.2)"
       }, 2.0); // 2.0s delay
 
+      // Continuous floating animation for badge (starts after reveal)
+      masterTl.to(badgeRef.current, {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"
+      }, "+=0.5");
 
+      // Subtle floating animation for image (only on desktop, starts after reveal)
+      if (window.innerWidth >= 1024) {
+        masterTl.to(imageRef.current, {
+          y: 8,
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: "power1.inOut"
+        }, "+=0.5");
+      }
 
       // Parallax effect for background elements (continuous)
       gsap.to('.mission-bg-1', {
@@ -284,7 +302,7 @@ const AboutUs = () => {
           <div className="order-1 lg:order-2 space-y-6">
             {/* Heading with animation */}
             <p ref={headingRef} className="font-instrument text-xl text-gray-600 leading-relaxed opacity-0">
-              We&apos;re dedicated to helping you achieve your goals with a simple, user-friendly experience.
+              We're dedicated to helping you achieve your goals with a simple, user-friendly experience.
               We believe our commitment to your success sets us apart.
             </p>
 

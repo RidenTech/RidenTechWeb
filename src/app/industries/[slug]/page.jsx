@@ -377,10 +377,7 @@ export default function IndustryDetailPage({ params }) {
   const industry = industryData[slug] || industryData["healthcare"];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -533,15 +530,13 @@ export default function IndustryDetailPage({ params }) {
         }
       );
 
-      // Parallax effect for image
-      gsap.to('.industry-image', {
-        y: 30,
-        scrollTrigger: {
-          trigger: '.industry-image',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1
-        }
+      // Continuous floating animation for badge
+      gsap.to('.industry-badge', {
+        y: -4,
+        duration: 2.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
       });
 
       // Parallax effect for image

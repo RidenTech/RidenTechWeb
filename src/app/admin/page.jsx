@@ -34,26 +34,20 @@ const AdminLogin = () => {
 
   // Set isClient to true when component mounts (to avoid hydration issues)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsClient(true);
-      setEnvLoaded(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    setIsClient(true);
+    setEnvLoaded(true);
   }, []);
 
   // Check if already authenticated on mount
   useEffect(() => {
     if (isClient) {
-      const timer = setTimeout(() => {
-        try {
-          const auth = localStorage.getItem('admin-auth');
-          setIsAuthenticated(auth === 'true');
-        } catch (error) {
-          console.error('Error accessing localStorage:', error);
-          setIsAuthenticated(false);
-        }
-      }, 0);
-      return () => clearTimeout(timer);
+      try {
+        const auth = localStorage.getItem('admin-auth');
+        setIsAuthenticated(auth === 'true');
+      } catch (error) {
+        console.error('Error accessing localStorage:', error);
+        setIsAuthenticated(false);
+      }
     }
   }, [isClient]);
 

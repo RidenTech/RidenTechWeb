@@ -28,51 +28,55 @@ export default function CTA() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 85%",
+          start: "top 80%",
+          end: "bottom 20%",
           toggleActions: "play none none reverse"
         }
       });
 
       // Content animation
-      tl.from(contentRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out"
-      });
+      tl.fromTo(contentRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+      );
 
       // Badge animation
-      tl.from(badgeRef.current, {
-        y: -20,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      }, "-=0.7");
+      tl.fromTo(badgeRef.current,
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+        "-=0.6"
+      );
 
       // Title animation
-      tl.from(titleRef.current, {
-        y: 30,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power4.out"
-      }, "-=0.6");
+      tl.fromTo(titleRef.current,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "power4.out" },
+        "-=0.4"
+      );
 
       // Description animation
-      tl.from(descriptionRef.current, {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      }, "-=0.5");
+      tl.fromTo(descriptionRef.current,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+        "-=0.4"
+      );
 
       // Button animation
-      tl.from(buttonRef.current, {
-        y: 20,
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.8,
-        ease: "back.out(1.4)"
-      }, "-=0.4");
+      tl.fromTo(buttonRef.current,
+        { y: 20, opacity: 0, scale: 0.95 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" },
+        "-=0.2"
+      );
+
+      // Continuous floating animation for badge
+      gsap.to(badgeRef.current, {
+        y: -3,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        delay: 1
+      });
 
     }, sectionRef);
 
@@ -84,19 +88,18 @@ export default function CTA() {
     };
   }, [mounted]);
 
-  if (!mounted) return (
-    <section ref={sectionRef} className="relative py-20 md:py-24 overflow-hidden min-h-[400px]" />
-  );
+  if (!mounted) return <section ref={sectionRef} className="relative py-20 md:py-24 overflow-hidden" />;
+
 
   return (
     <section
       ref={sectionRef}
-      className="relative py-20 md:py-24 overflow-hidden bg-white"
+      className="relative py-20 md:py-24 overflow-hidden"
     >
-      {/* Background Container - White theme */}
+      {/* Gradient Background Container - Black/White theme */}
       <div className="absolute inset-0 flex justify-center items-start pointer-events-none">
         <div
-          className="w-full max-w-7xl mx-auto h-full bg-black rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm"
+          className="w-full max-w-6xl mx-auto h-full bg-black rounded-2xl md:rounded-3xl "
           style={{
             minHeight: '320px',
             maxHeight: '420px',
@@ -106,6 +109,11 @@ export default function CTA() {
         />
       </div>
 
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gray-800/30 rounded-full filter blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gray-800/30 rounded-full filter blur-3xl"></div>
+      </div>
 
       {/* Content */}
       <div ref={contentRef} className="relative z-10 max-w-6xl mx-auto">
@@ -113,37 +121,37 @@ export default function CTA() {
           {/* Badge */}
           <div
             ref={badgeRef}
-            className="inline-flex items-center bg-gray-50 text-gray-700 rounded-full px-4 py-2 mb-6 border border-gray-200"
+            className="inline-flex items-center bg-gray-800 text-gray-300 rounded-full px-4 py-2 mb-6 border border-gray-700"
           >
-            <Sparkles className="w-4 h-4 mr-2 text-gray-500" />
+            <Sparkles className="w-4 h-4 mr-2 text-gray-400" />
             <span className="text-xs font-manrope tracking-wider">LIMITED SPOTS</span>
           </div>
 
           {/* Title */}
           <h2
             ref={titleRef}
-            className="font-marcellus text-3xl md:text-4xl lg:text-5xl text-gray-100 mb-4"
+            className="font-marcellus text-3xl md:text-4xl lg:text-5xl text-white mb-4"
           >
-            Ready to <span className="text-gray-200 ">Launch?</span>
+            Ready to <span className="text-gray-400 italic">Launch?</span>
           </h2>
 
           {/* Description */}
           <p
             ref={descriptionRef}
-            className="font-instrument text-gray-200 max-w-2xl mx-auto mb-8 text-lg"
+            className="font-instrument text-gray-400 max-w-2xl mx-auto mb-8 text-lg"
           >
-            Join 100+ founders who launched in 4 weeks. Let&apos;s build something great together.
+            Join 100+ founders who launched in 4 weeks. Let's build something great together.
           </p>
 
           {/* CTA Button */}
           <div ref={buttonRef} className="flex justify-center">
             <Link
               href="/contact"
-              className="group relative inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-full text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/20 font-manrope"
+              className="group relative inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-white/20 font-manrope"
             >
               <span className="relative z-10">Book Free Call</span>
               <ArrowRight className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
             </Link>
           </div>
 

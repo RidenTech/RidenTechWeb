@@ -118,6 +118,15 @@ export default function WhyChooseUs() {
         "-=0.2"
       );
 
+      // Continuous floating animation for badge
+      gsap.to(badgeRef.current, {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        delay: 1
+      });
 
     }, sectionRef);
 
@@ -161,7 +170,7 @@ export default function WhyChooseUs() {
             ref={subtitleRef}
             className="font-instrument text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Not just developers — we&apos;re your strategic partners in success, delivering excellence at every step.
+            Not just developers — we're your strategic partners in success, delivering excellence at every step.
           </p>
         </div>
 

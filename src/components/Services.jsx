@@ -206,6 +206,8 @@ export default function Services() {
     };
   }, [mounted]);
 
+
+
   // Handle hover-based expansion
   const handleMouseEnter = (idx) => {
     setHoveredIndex(idx);
@@ -326,11 +328,9 @@ export default function Services() {
 
         <h2
           ref={titleRef}
-          className="font-marcellus text-5xl md:text-6xl text-white mb-4 leading-tight"
+          className="font-manrope font-bold text-4xl md:text-5xl text-white mb-4 leading-tight"
         >
-          Your Needs,
-          <br />
-          <span className="text-gray-400 italic">Our Expertise</span>
+          Your Needs, <span className="text-gray-400 italic">Our Expertise</span>
         </h2>
 
         <p

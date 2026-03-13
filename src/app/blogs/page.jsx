@@ -123,22 +123,15 @@ export default function BlogPage() {
         }
       });
 
-      // Title animation
-      gsap.fromTo(titleRef.current,
-        { y: 200, opacity: 0, scale: 0.9 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.2,
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none none"
-          }
-        }
-      );
+      // Continuous bounce animation for badge
+      gsap.to(badgeRef.current, {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        delay: 1
+      });
 
     }, sectionRef);
 

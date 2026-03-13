@@ -131,6 +131,14 @@ const About = () => {
         "-=0.2"
       );
 
+      // Continuous floating animation for badge
+      gsap.to(badgeRef.current, {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"
+      });
 
       // Subtle pulse animation for stats on hover
       validStats.forEach(stat => {
@@ -171,6 +179,16 @@ const About = () => {
         }
       });
 
+      // Subtle floating animation for image (only on desktop)
+      if (window.innerWidth >= 1024) {
+        gsap.to(imageRef.current, {
+          y: 8,
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: "power1.inOut"
+        });
+      }
     });
 
     return () => {
@@ -198,7 +216,7 @@ const About = () => {
 
           {/* Titles with animation */}
           <h2 ref={titleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-4">
-            We&apos;re on a Mission to
+            We're on a Mission to
           </h2>
           <h2 ref={subtitleRef} className="font-marcellus text-5xl md:text-6xl text-gray-900 mb-6">
             <span className="relative">
@@ -208,7 +226,7 @@ const About = () => {
 
           {/* Heading with animation */}
           <p ref={headingRef} className="font-instrument text-xl text-gray-600 max-w-2xl mx-auto">
-            We&apos;re not just developers — we&apos;re partners in your success, bringing together
+            We're not just developers — we're partners in your success, bringing together
             strategy, design, and technology to create exceptional digital experiences.
           </p>
         </div>

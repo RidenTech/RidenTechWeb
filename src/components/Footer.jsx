@@ -2,24 +2,23 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Send, Sparkles } from "lucide-react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa6";
+import { Mail, Phone, MapPin, Send, Facebook, Twitter, Instagram, Linkedin, Youtube, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer() {
-  const [mounted, setMounted] = useState(false);
   const footerRef = useRef(null);
   const contentRef = useRef(null);
-  const newsletterRef = useRef(null);
   const columnsRef = useRef([]);
   const socialRefs = useRef([]);
+  const newsletterRef = useRef(null);
   const bigLogoRef = useRef(null);
   const privacyLinksRef = useRef(null);
-
   const currentYear = new Date().getFullYear();
+
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -28,81 +27,107 @@ export default function Footer() {
   useEffect(() => {
     if (!mounted) return;
     const ctx = gsap.context(() => {
+      // Set initial states for all elements
+      gsap.set([contentRef.current, newsletterRef.current, ...columnsRef.current, ...socialRefs.current, bigLogoRef.current, privacyLinksRef.current], {
+        opacity: 0,
+        y: 50
+      });
+
       // Create master timeline with scroll trigger
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: footerRef.current,
-          start: "top 90%",
+          start: "top 80%",
+          end: "bottom 20%",
           toggleActions: "play none none reverse"
         }
       });
 
       // 1. Content container fade in
-      tl.from(contentRef.current, {
-        opacity: 0,
-        y: 40,
+      tl.to(contentRef.current, {
+        opacity: 1,
+        y: 0,
         duration: 1,
         ease: "power3.out"
       });
 
-      // 2. Newsletter section
-      tl.from(newsletterRef.current, {
-        opacity: 0,
-        y: 30,
-        scale: 0.98,
-        duration: 1,
-        ease: "power2.out"
-      }, "-=0.7");
-
-      // 3. Columns stagger
-      tl.from(columnsRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power2.out"
+      // 2. Newsletter section with bounce
+      tl.to(newsletterRef.current, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.2,
+        ease: "elastic.out(1, 0.5)"
       }, "-=0.6");
 
-      // 4. Social icons pop
-      tl.from(socialRefs.current, {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.6,
-        stagger: 0.05,
-        ease: "back.out(1.7)"
+      // 3. Columns stagger with rotation and fade
+      tl.to(columnsRef.current, {
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        duration: 1,
+        stagger: 0.15,
+        ease: "power3.out"
       }, "-=0.4");
 
-      // 5. Big logo reveal
-      tl.from(bigLogoRef.current, {
-        opacity: 0,
-        y: 40,
-        scale: 0.95,
-        duration: 1.2,
-        ease: "power3.out"
+      // 4. Social icons pop with rotation
+      tl.to(socialRefs.current, {
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "back.out(1.7)"
       }, "-=0.3");
 
-      // 6. Privacy links
-      tl.from(privacyLinksRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
+      // 5. Big logo dramatic reveal
+      tl.to(bigLogoRef.current, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.5,
+        ease: "power4.out"
+      }, "-=0.2");
+
+      // 6. Privacy links fade in
+      tl.to(privacyLinksRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
         ease: "power2.out"
       }, "-=0.4");
+
+      // Add continuous subtle animations
+
+      // Sparkle icon pulse
+      gsap.to(".sparkle-icon", {
+        scale: 1.1,
+        rotate: 5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+      });
+
+      // Big logo subtle pulse
+      gsap.to(bigLogoRef.current, {
+        scale: 1.05,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 2
+      });
 
     }, footerRef);
 
-    const currentFooter = footerRef.current;
     return () => {
       ctx.revert();
       ScrollTrigger.getAll().forEach(t => {
-        if (t.trigger === currentFooter) t.kill(true);
+        if (t.trigger === footerRef.current) t.kill(true);
       });
     };
   }, [mounted]);
-
-  if (!mounted) return (
-    <footer ref={footerRef} className="w-full bg-black min-h-[400px]" />
-  );
 
   // Hover handlers for social icons
   const handleSocialEnter = (e) => {
@@ -163,13 +188,27 @@ export default function Footer() {
     });
   };
 
+  if (!mounted) return (
+    <footer
+      ref={footerRef}
+      className="w-full bg-black text-white overflow-hidden relative"
+      style={{
+        zIndex: 20,
+        minHeight: "100vh",
+        marginTop: 0,
+        paddingTop: "4rem",
+        paddingBottom: "2rem"
+      }}
+    />
+  );
+
   return (
     <footer
       ref={footerRef}
       className="w-full bg-black text-white overflow-hidden relative"
       style={{
         zIndex: 20,
-        minHeight: "600px",
+        minHeight: "100vh",
         marginTop: 0,
         paddingTop: "4rem",
         paddingBottom: "2rem"
@@ -190,29 +229,29 @@ export default function Footer() {
               <Sparkles className="sparkle-icon w-5 h-5 text-gray-200" />
               <span className="font-['Manrope'] text-xs text-gray-100 tracking-wider">NEWSLETTER</span>
             </div>
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <h2 className="font-['Marcellus'] text-3xl md:text-4xl text-white lg:mb-0 max-w-xl leading-tight">
-                Get the latest tips for social media growth and marketing straight to your inbox!
-              </h2>
+            <h2 className="font-['Marcellus'] text-3xl md:text-4xl lg:text-5xl text-white mb-8 max-w-3xl leading-tight">
+              Get the latest tips for social media growth and marketing straight to your inbox!
+            </h2>
 
-              <div className="flex w-full gap-4 max-w-xl">
-                <input
-                  type="email"
-                  placeholder="jhon@example.com"
-                  className="flex-1 px-6 py-4 bg-transparent border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 transition-all duration-300 font-['Manrope'] text-sm hover:border-gray-600"
-                />
-                <button
-                  onMouseEnter={handleSubscribeEnter}
-                  onMouseLeave={handleSubscribeLeave}
-                  className="subscribe-btn group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-white/10 font-['Manrope'] text-sm font-medium whitespace-nowrap"
-                >
-                  <span className="relative z-10">Subscribe</span>
-                  <Send className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                </button>
-              </div>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl">
+              <input
+                type="email"
+                placeholder="jhon@example.com"
+                className="flex-1 px-6 py-4 bg-transparent border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 transition-all duration-300 font-['Manrope'] text-sm hover:border-gray-600"
+              />
+              <button
+                onMouseEnter={handleSubscribeEnter}
+                onMouseLeave={handleSubscribeLeave}
+                className="subscribe-btn group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-white/10 font-['Manrope'] text-sm font-medium"
+              >
+                <span className="relative z-10">Subscribe</span>
+                <Send className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+              </button>
             </div>
-
+            <p className="font-['Manrope'] text-xs text-gray-300 mt-4">
+              No spam. Unsubscribe anytime.
+            </p>
           </div>
 
           {/* Links Grid */}
@@ -315,18 +354,18 @@ export default function Footer() {
           {/* Bottom Bar */}
           <div className="border-t border-gray-800 pt-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="font-['Manrope'] text-xs text-gray-100">
+              <p className="font-['Manrope'] text-xs text-gray-100 order-2 md:order-1">
                 © {currentYear} RidenTech. All rights reserved.
               </p>
 
               {/* Social Links */}
               <div className="flex gap-4">
                 {[
-                  { icon: <FaFacebookF className="w-4 h-4" />, href: "#" },
-                  { icon: <FaTwitter className="w-4 h-4" />, href: "#" },
-                  { icon: <FaInstagram className="w-4 h-4" />, href: "#" },
-                  { icon: <FaLinkedinIn className="w-4 h-4" />, href: "#" },
-                  { icon: <FaYoutube className="w-4 h-4" />, href: "#" }
+                  { icon: <Facebook className="w-4 h-4" />, href: "#", label: "FB" },
+                  { icon: <Twitter className="w-4 h-4" />, href: "#", label: "TW" },
+                  { icon: <Instagram className="w-4 h-4" />, href: "#", label: "IG" },
+                  { icon: <Linkedin className="w-4 h-4" />, href: "#", label: "LI" },
+                  { icon: <Youtube className="w-4 h-4" />, href: "#", label: "YT" }
                 ].map((social, index) => (
                   <a
                     key={index}
@@ -334,7 +373,7 @@ export default function Footer() {
                     ref={el => socialRefs.current[index] = el}
                     onMouseEnter={handleSocialEnter}
                     onMouseLeave={handleSocialLeave}
-                    className="w-10 h-10 border border-gray-800 hover:border-gray-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 bg-white/5"
+                    className="w-10 h-10 border bg-white border-gray-800 hover:border-gray-600 rounded-full flex items-center justify-center text-gray-900 hover:text-white transition-all duration-300 hover:scale-110"
                     aria-label={social.label}
                   >
                     {social.icon}

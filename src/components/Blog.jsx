@@ -130,6 +130,7 @@ export default function Blog() {
         }
       });
 
+
       // Animate stats separately if they exist
       if (statsRef.current.length > 0) {
         gsap.from(statsRef.current, {
@@ -147,13 +148,13 @@ export default function Blog() {
       }
 
       // Desktop horizontal scroll animation
-      if (!isMobile && !isTablet && scrollLength > 0) {
+      if (!isMobile && !isTablet && scrollLength > 0 && pinContainerRef.current) {
         ScrollTrigger.create({
           trigger: sectionRef.current,
           start: "top top",
-          end: () => `+=${scrollLength + window.innerHeight}`, // Use window height for better completion feel
-          scrub: 1,
-          pin: true, // Pin the whole section
+          end: () => `+=${scrollLength + 200}`,
+          scrub: 1.2,
+          pin: pinContainerRef.current,
           pinSpacing: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
@@ -218,16 +219,21 @@ export default function Blog() {
   if (!mounted) return (
     <section
       ref={sectionRef}
-      className={`w-full ${isMobile || isTablet ? 'py-16' : 'h-[120vh]'} bg-gradient-to-br from-white to-gray-50 relative overflow-hidden`}
-    />
+      className="w-full bg-gradient-to-br from-white to-gray-50 relative"
+    >
+      <div className="w-full h-[120vh] overflow-hidden relative"></div>
+    </section>
   );
 
   return (
     <section
       ref={sectionRef}
-      className={`w-full ${isMobile || isTablet ? 'py-16' : 'min-h-screen'} bg-gradient-to-br from-white to-gray-50 relative overflow-hidden`}
+      className="w-full bg-gradient-to-br from-white to-gray-50 relative"
     >
-      <div ref={pinContainerRef} className="w-full h-full">
+      <div
+        ref={pinContainerRef}
+        className={`w-full ${isMobile || isTablet ? 'py-16' : 'h-[120vh]'} overflow-hidden relative`}
+      >
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-40 right-0 w-96 h-96 bg-gray-200 rounded-full filter blur-3xl opacity-20"></div>

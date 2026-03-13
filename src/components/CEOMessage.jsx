@@ -112,6 +112,15 @@ export default function CEOMessage() {
         "-=0.8"
       );
 
+      // Continuous floating animation for image (like in About component)
+      gsap.to(imageRef.current, {
+        y: 8,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        delay: 1.5
+      });
 
     }, sectionRef);
 

@@ -111,6 +111,16 @@ const Hero = () => {
         "-=0.8"
       );
 
+      // Subtle floating animation for image (only on desktop)
+      if (window.innerWidth >= 1024) {
+        gsap.to(imageRef.current, {
+          y: 10,
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: "power1.inOut"
+        });
+      }
     });
 
     return () => {

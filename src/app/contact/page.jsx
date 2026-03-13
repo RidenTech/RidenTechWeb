@@ -166,7 +166,7 @@ export default function ContactPage() {
             </h2>
 
             <p ref={subtitleRef} className="font-['Manrope'] text-gray-600 max-w-2xl mx-auto">
-              Fill out the form below and we&apos;ll get back to you within 24 hours.
+              Fill out the form below and we'll get back to you within 24 hours.
             </p>
           </div>
 

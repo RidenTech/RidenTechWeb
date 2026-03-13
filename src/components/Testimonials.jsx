@@ -175,6 +175,15 @@ export default function Testimonials() {
         ease: "back.out(1.2)"
       }, "-=0.2");
 
+      // Continuous bouncing animation for badge
+      gsap.to(badgeRef.current, {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        delay: 1
+      });
 
       // Initialize carousel animation
       if (trackRef.current) {
@@ -301,7 +310,7 @@ export default function Testimonials() {
 
           {/* Heading with animation */}
           <p ref={headingRef} className="font-instrument text-xl text-gray-600 max-w-2xl mx-auto">
-            Real stories from the people and companies we&apos;re helped transform through
+            Real stories from the people and companies we've helped transform through
             innovative technology solutions and dedicated partnership.
           </p>
         </div>
@@ -330,7 +339,7 @@ export default function Testimonials() {
 
                       {/* Large Quote Mark */}
                       <div className="absolute top-4 right-4 text-8xl font-serif text-gray-200 group-hover:text-gray-300 transition-colors duration-300">
-                        &quot;
+                        "
                       </div>
 
                       {/* Rating stars - Gray theme */}
@@ -339,8 +348,8 @@ export default function Testimonials() {
                           <Star
                             key={i}
                             className={`w-4 h-4 ${i < testimonial.rating
-                              ? 'text-gray-800 fill-gray-800'
-                              : 'text-gray-200 fill-gray-200'
+                                ? 'text-gray-800 fill-gray-800'
+                                : 'text-gray-200 fill-gray-200'
                               }`}
                           />
                         ))}
@@ -349,7 +358,7 @@ export default function Testimonials() {
                       {/* Quote */}
                       <div className="flex-1 relative z-10">
                         <p className="font-manrope text-gray-700 text-sm leading-relaxed line-clamp-4">
-                          &quot;{testimonial.quote}&quot;
+                          "{testimonial.quote}"
                         </p>
                       </div>
 
