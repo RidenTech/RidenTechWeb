@@ -1,7 +1,5 @@
-// components/WhyChooseUs.jsx
-"use client";
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import {
   Rocket,
   Shield,
@@ -74,49 +72,60 @@ export default function WhyChooseUs() {
       });
 
       // Badge animation
-      tl.fromTo(badgeRef.current,
-        { y: -30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
-      );
+      if (badgeRef.current) {
+        tl.fromTo(badgeRef.current,
+          { y: -30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        );
+      }
 
       // Title animation
-      tl.fromTo(titleRef.current,
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power4.out" },
-        "-=0.4"
-      );
+      if (titleRef.current) {
+        tl.fromTo(titleRef.current,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: "power4.out" },
+          "-=0.4"
+        );
+      }
 
       // Subtitle animation
-      tl.fromTo(subtitleRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.4"
-      );
+      if (subtitleRef.current) {
+        tl.fromTo(subtitleRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
 
       // Cards stagger animation
-      tl.fromTo(cardsRef.current,
-        {
-          y: 50,
-          opacity: 0,
-          scale: 0.95
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out"
-        },
-        "-=0.2"
-      );
+      const validCards = cardsRef.current.filter(Boolean);
+      if (validCards.length > 0) {
+        tl.fromTo(validCards,
+          {
+            y: 50,
+            opacity: 0,
+            scale: 0.95
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power3.out"
+          },
+          "-=0.2"
+        );
+      }
 
       // CTA animation
-      tl.fromTo(ctaRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.2)" },
-        "-=0.2"
-      );
+      if (ctaRef.current) {
+        tl.fromTo(ctaRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.2)" },
+          "-=0.2"
+        );
+      }
 
 
 
@@ -203,7 +212,7 @@ export default function WhyChooseUs() {
         {/* CTA Section */}
         <div ref={ctaRef} className="text-center mt-16">
           <Link
-            href="/contact"
+            to="/contact"
             className="group inline-flex items-center space-x-2 bg-gray-900 text-white px-8 py-4 rounded-lg text-sm font-medium hover:bg-gray-800 transition-all duration-300 hover:shadow-xl font-manrope"
           >
             <span>Start Your Project</span>

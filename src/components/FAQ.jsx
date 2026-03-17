@@ -1,8 +1,6 @@
-// components/FAQ.jsx
-"use client";
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, HelpCircle, Mail, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,28 +8,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 const faqData = [
   {
-    question: "What services does Riden Tech offer?",
-    answer: "We offer a comprehensive range of software development services including Custom Software Development, Web & PWA Engineering, Mobile App Development, API Integration, AI & Machine Learning, Cloud Architecture, DevOps, UI/UX Design, E-Commerce Solutions, and Database Architecture."
+    question: "What services does RidenTech offer?",
+    answer: "We provide a full range of software development services including Custom Software Development, Web & PWA Engineering, Mobile App Development, API & Systems Integration, AI & Machine Learning, Cloud Architecture, DevOps & Automation, UI/UX Design, E-Commerce Solutions, and Database Architecture."
   },
   {
     question: "How long does it take to develop a project?",
-    answer: "Project timelines vary based on complexity and requirements. A simple MVP can be delivered in 4-6 weeks, while more complex enterprise solutions may take 3-6 months. We provide detailed timelines during our initial consultation."
+    answer: "Project timelines depend on complexity and requirements. A simple MVP can be delivered in 4-6 weeks, while more complex enterprise solutions may take 3-6 months. Detailed timelines are provided during the initial consultation."
   },
   {
     question: "What is your development process?",
-    answer: "We follow an agile methodology with these phases: Discovery & Planning, Design & Prototyping, Development & Sprints, Testing & QA, Deployment, and Ongoing Support. We maintain transparent communication throughout."
+    answer: "We follow an agile methodology with these phases: Discovery & Planning, Design & Prototyping, Development & Sprints, Testing & QA, Deployment, and Ongoing Support. Transparent communication is maintained throughout the process."
   },
   {
     question: "Do you provide ongoing support after launch?",
-    answer: "Yes, we offer 30 days of free support after launch, plus flexible maintenance packages for ongoing updates, improvements, and technical support."
+    answer: "Yes, we offer 30 days of free support after launch, along with flexible maintenance packages for updates, improvements, and technical assistance to keep your systems running smoothly."
   },
   {
     question: "What technologies do you specialize in?",
-    answer: "We specialize in modern technologies including React, Next.js, Node.js, Python, TypeScript, AWS, Google Cloud, MongoDB, PostgreSQL, and various AI/ML frameworks."
+    answer: "We specialize in modern web, mobile, and cloud technologies, including React, Next.js, Node.js, Python, TypeScript, AWS, Google Cloud, MongoDB, PostgreSQL, and AI/ML frameworks tailored to your business needs."
   },
   {
     question: "How do you handle project pricing?",
-    answer: "We offer flexible pricing models including fixed-price for well-defined projects, time & materials for evolving requirements, and dedicated team models for long-term partnerships."
+    answer: "We provide flexible pricing models including fixed-price for well-defined projects, time & materials for evolving requirements, and dedicated team models for long-term partnerships and ongoing collaborations."
   }
 ];
 
@@ -84,78 +82,92 @@ export default function FAQ() {
       });
 
       // Set initial states for entrance animations
-      gsap.set([badgeRef.current, titleRef.current, subtitleRef.current, ...faqItemsRef.current, ctaRef.current], {
-        opacity: 0,
-        y: 50
-      });
+      const initialTargets = [badgeRef.current, titleRef.current, subtitleRef.current, ...faqItemsRef.current.filter(Boolean), ctaRef.current].filter(Boolean);
+      if (initialTargets.length > 0) {
+        gsap.set(initialTargets, {
+          opacity: 0,
+          y: 50
+        });
+      }
 
       // Badge animation - fade in from top with bounce
-      tl.fromTo(badgeRef.current,
-        { y: -50, opacity: 0, scale: 0.8 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          ease: "back.out(1.7)"
-        }
-      );
+      if (badgeRef.current) {
+        tl.fromTo(badgeRef.current,
+          { y: -50, opacity: 0, scale: 0.8 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            ease: "back.out(1.7)"
+          }
+        );
+      }
 
       // Title animation - dramatic reveal
-      tl.fromTo(titleRef.current,
-        { y: 100, opacity: 0, scale: 0.9 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.2,
-          ease: "power4.out"
-        },
-        "-=0.6"
-      );
+      if (titleRef.current) {
+        tl.fromTo(titleRef.current,
+          { y: 100, opacity: 0, scale: 0.9 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            ease: "power4.out"
+          },
+          "-=0.6"
+        );
+      }
 
       // Subtitle animation - slide up
-      tl.fromTo(subtitleRef.current,
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out"
-        },
-        "-=0.4"
-      );
+      if (subtitleRef.current) {
+        tl.fromTo(subtitleRef.current,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out"
+          },
+          "-=0.4"
+        );
+      }
 
       // FAQ items stagger animation with entrance effects
-      tl.fromTo(faqItemsRef.current,
-        {
-          y: 60,
-          opacity: 0,
-          scale: 0.95
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out"
-        },
-        "-=0.2"
-      );
+      const validFaqItems = faqItemsRef.current.filter(Boolean);
+      if (validFaqItems.length > 0) {
+        tl.fromTo(validFaqItems,
+          {
+            y: 60,
+            opacity: 0,
+            scale: 0.95
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out"
+          },
+          "-=0.2"
+        );
+      }
 
       // CTA animation with pop effect
-      tl.fromTo(ctaRef.current,
-        { y: 40, opacity: 0, scale: 0.9 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "back.out(1.4)"
-        },
-        "-=0.2"
-      );
+      if (ctaRef.current) {
+        tl.fromTo(ctaRef.current,
+          { y: 40, opacity: 0, scale: 0.9 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: "back.out(1.4)"
+          },
+          "-=0.2"
+        );
+      }
 
       // Parallax effect for background elements
       gsap.to('.faq-bg-1', {
@@ -308,7 +320,7 @@ export default function FAQ() {
             <div ref={headerRef}>
               <div ref={badgeRef} className="inline-flex items-center bg-gray-900 text-white rounded-full px-5 py-2 mb-6 shadow-md">
                 <HelpCircle className="w-4 h-4 mr-2" />
-                <span className="text-sm font-manrope font-medium tracking-wide">Questions</span>
+                <span className="text-sm font-manrope font-medium tracking-wide uppercase">Questions</span>
               </div>
               <h2 ref={titleRef} className="font-manrope font-bold text-4xl md:text-5xl text-gray-900 mb-4 leading-tight">
                 Frequently Asked
@@ -327,9 +339,9 @@ export default function FAQ() {
                 Still Have More Questions?
               </h3>
               <p className="font-instrument text-gray-600 mb-8 relative z-10">
-                If you&apos;re curious or need more info, feel free to reach out — we&apos;re here to help!
+                If you&apos;re curious or need more info, feel free to reach out we&apos;re here to help!
               </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-4 rounded-xl font-manrope font-medium hover:bg-black transition-all duration-300 group/btn">
+              <Link to="/contact" className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-4 rounded-xl font-manrope font-medium hover:bg-black transition-all duration-300 group/btn">
                 <span>Contact Us Now</span>
                 <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
               </Link>

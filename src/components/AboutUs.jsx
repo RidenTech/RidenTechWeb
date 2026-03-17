@@ -1,7 +1,5 @@
-// components/AboutUs.jsx
-"use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { ArrowRight, Lightbulb, TrendingUp, Heart, BarChart3, Target, Zap, CheckCircle } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -69,12 +67,23 @@ const AboutUs = () => {
     window.addEventListener('resize', updateClipPath);
 
     // Set initial states
-    gsap.set([badgeRef.current, titleRef.current, headingRef.current,
-    descriptionRef.current, ...featuresRef.current.filter(el => el),
-    borderLineRef.current, ctaRef.current, imageRef.current], {
-      opacity: 0,
-      y: 30
-    });
+    const initialTargets = [
+      badgeRef.current, titleRef.current, headingRef.current,
+      descriptionRef.current, ...featuresRef.current.filter(Boolean),
+      borderLineRef.current, ctaRef.current, imageRef.current
+    ].filter(Boolean);
+
+    if (initialTargets.length > 0) {
+      gsap.set(initialTargets, {
+        opacity: 0,
+        y: 30
+      });
+    }
+
+    // Explicitly set scaleX for borderLineRef if it exists
+    if (borderLineRef.current) {
+      gsap.set(borderLineRef.current, { scaleX: 0 });
+    }
 
     const ctx = gsap.context(() => {
       // Create a master timeline with delays
@@ -89,54 +98,65 @@ const AboutUs = () => {
       });
 
       // Badge animation with delay
-      masterTl.to(badgeRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power3.out"
-      }, 0.2); // 0.2s delay
+      if (badgeRef.current) {
+        masterTl.to(badgeRef.current, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out"
+        }, 0.2); // 0.2s delay
+      }
 
       // Title and subtitle with staggered delay
-      masterTl.to([titleRef.current], {
-        y: 0,
-        opacity: 1,
-        duration: 0.9,
-        stagger: 0.2,
-        ease: "power4.out"
-      }, 0.4); // 0.4s delay
+      const titleTargets = [titleRef.current].filter(Boolean);
+      if (titleTargets.length > 0) {
+        masterTl.to(titleTargets, {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          stagger: 0.2,
+          ease: "power4.out"
+        }, 0.4); // 0.4s delay
+      }
 
       // Heading with delay
-      masterTl.to(headingRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power3.out"
-      }, 0.6); // 0.6s delay
+      if (headingRef.current) {
+        masterTl.to(headingRef.current, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out"
+        }, 0.6); // 0.6s delay
+      }
 
       // Image animation with delay
-      masterTl.fromTo(imageRef.current,
-        {
-          opacity: 0,
-          scale: 0.9,
-          rotation: 2
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          rotation: 0,
-          duration: 1.4,
-          ease: "power3.out"
-        },
-        0.8 // 0.8s delay
-      );
+      if (imageRef.current) {
+        masterTl.fromTo(imageRef.current,
+          {
+            opacity: 0,
+            scale: 0.9,
+            rotation: 2
+          },
+          {
+            opacity: 1,
+            scale: 1,
+            rotation: 0,
+            duration: 1.4,
+            ease: "power3.out"
+          },
+          0.8 // 0.8s delay
+        );
+      }
 
       // Description with delay
-      masterTl.to(descriptionRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power3.out"
-      }, 1.0); // 1.0s delay
+      if (descriptionRef.current) {
+        masterTl.to(descriptionRef.current, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out"
+        }, 1.0); // 1.0s delay
+      }
 
       // Features with staggered delay
       const validFeatures = featuresRef.current.filter(el => el);
@@ -152,25 +172,29 @@ const AboutUs = () => {
       }
 
       // Border line with delay
-      masterTl.to(borderLineRef.current, {
-        scaleX: 1,
-        opacity: 1,
-        duration: 1,
-        ease: "power3.out"
-      }, 1.8); // 1.8s delay
+      if (borderLineRef.current) {
+        masterTl.to(borderLineRef.current, {
+          scaleX: 1,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out"
+        }, 1.8); // 1.8s delay
+      }
 
       // CTA with delay
-      masterTl.to(ctaRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 0.7,
-        ease: "back.out(1.2)"
-      }, 2.0); // 2.0s delay
+      if (ctaRef.current) {
+        masterTl.to(ctaRef.current, {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "back.out(1.2)"
+        }, 2.0); // 2.0s delay
+      }
 
 
 
       // Subtle floating animation for image (only on desktop, starts after reveal)
-      if (window.innerWidth >= 1024) {
+      if (window.innerWidth >= 1024 && imageRef.current) {
         masterTl.to(imageRef.current, {
           y: 8,
           duration: 3,
@@ -281,7 +305,7 @@ const AboutUs = () => {
                 <div
                   className="w-full h-full bg-cover bg-center"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+                    backgroundImage: "url('/aboutus.jpg')"
                   }}
                 ></div>
               </div>
@@ -289,23 +313,21 @@ const AboutUs = () => {
           </div>
 
           {/* Right Side - Content */}
-          <div className="order-1 lg:order-2 space-y-6">
+          <div className="order-1 lg:order-2 space-y-3 flex flex-col gap-4">
             {/* Heading with animation */}
-            <p ref={headingRef} className="font-instrument text-xl text-gray-600 leading-relaxed opacity-0">
-              We're dedicated to helping you achieve your goals with a simple, user-friendly experience.
-              We believe our commitment to your success sets us apart.
+            <p ref={headingRef} className="font-instrument text-lg text-gray-600 leading-relaxed opacity-0">
+              We are dedicated to helping you achieve your goals with intuitive, user-friendly digital solutions. Our commitment to your success drives everything we do and sets us apart.
             </p>
 
             {/* Description Text */}
-            <div ref={descriptionRef} className="space-y-4 opacity-0">
+            <div ref={descriptionRef} className=" opacity-0">
               <p className="font-instrument text-lg text-gray-600 leading-relaxed">
-                Our approach combines strategic thinking with technical excellence to deliver solutions
-                that not only meet but exceed expectations.
+                Our approach combines strategic thinking with technical excellence to deliver solutions that not only meet but exceed expectations.
               </p>
             </div>
 
             {/* Features List */}
-            <div className="space-y-4 pt-2">
+            <div className="space-y-4">
               {features.map((feature, index) => (
                 <div
                   key={index}
@@ -330,24 +352,15 @@ const AboutUs = () => {
               ))}
             </div>
 
-            {/* Border Line with animation */}
-            <div ref={borderLineRef} className="w-full h-px bg-gray-200 origin-left my-6 opacity-0 scale-x-0"></div>
 
             {/* CTA with animation */}
             <div ref={ctaRef} className="flex flex-wrap gap-4 opacity-0">
               <Link
-                href="/contact"
+                to="/contact"
                 className="group inline-flex items-center space-x-2 bg-gray-900 text-white px-8 py-4 rounded-lg text-sm font-medium hover:bg-gray-800 transition-all duration-300 hover:shadow-lg font-manrope"
               >
                 <span>Start Projects</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-
-              <Link
-                href="/about"
-                className="group inline-flex items-center space-x-2 border-2 border-gray-900 text-gray-900 px-8 py-4 rounded-lg text-sm font-medium hover:bg-gray-900 hover:text-white transition-all duration-300 hover:shadow-lg font-manrope"
-              >
-                <span>Learn More</span>
               </Link>
             </div>
           </div>

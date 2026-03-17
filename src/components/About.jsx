@@ -1,8 +1,6 @@
-// components/About.jsx
-"use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { ArrowRight, Award, Users, Clock, Target, CheckCircle, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Users, Rocket, Star, Zap, Code, Sparkles, Brain } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -20,25 +18,9 @@ const About = () => {
   const badgeRef = useRef(null);
   const ctaRef = useRef(null);
   const borderLineRef = useRef(null);
-  const [clipPath, setClipPath] = useState("");
-
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    // Set responsive clip path based on screen size
-    const updateClipPath = () => {
-      if (window.innerWidth < 768) {
-        // Mobile clip path - smaller version
-        setClipPath("path('M 10,20 L 100,20 A 10,10 0,0,0 110,10 L 110,10 A 10,10 0,0,1 120,0 L 260,0 A 10,10 0,0,1 270,10 L 270,235 A 10,10 0,0,1 260,245 L 10,245 A 10,10 0,0,1 0,235 L 0,30 A 10,10 0,0,1 10,20 Z')");
-      } else if (window.innerWidth < 1024) {
-        // Tablet clip path - medium version
-        setClipPath("path('M 15,30 L 150,30 A 15,15 0,0,0 165,15 L 165,15 A 15,15 0,0,1 180,0 L 390,0 A 15,15 0,0,1 405,15 L 405,352 A 15,15 0,0,1 390,367 L 15,367 A 15,15 0,0,1 0,352 L 0,45 A 15,15 0,0,1 15,30 Z')");
-      } else {
-        // Desktop clip path - original version
-        setClipPath("path('M 20,40 L 200,40 A 20,20 0,0,0 220,20 L 220,20 A 20,20 0,0,1 240,0 L 520,0 A 20,20 0,0,1 540,20 L 540,470 A 20,20 0,0,1 520,490 L 20,490 A 20,20 0,0,1 0,470 L 0,60 A 20,20 0,0,1 20,40 Z')");
-      }
-    };
-
-    updateClipPath();
-    window.addEventListener('resize', updateClipPath);
+    if (!mounted) return;
 
     const ctx = gsap.context(() => {
       // Initial animations with ScrollTrigger
@@ -52,59 +34,70 @@ const About = () => {
       });
 
       // Badge animation - fade in and slide down
-      tl.fromTo(badgeRef.current,
-        { y: -30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
-      );
+      if (badgeRef.current) {
+        tl.fromTo(badgeRef.current,
+          { y: -30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        );
+      }
 
       // Title and subtitle animation with stagger
-      tl.fromTo([titleRef.current, subtitleRef.current],
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          stagger: 0.2,
-          ease: "power4.out"
-        },
-        "-=0.4"
-      );
+      const titleTargets = [titleRef.current, subtitleRef.current].filter(Boolean);
+      if (titleTargets.length > 0) {
+        tl.fromTo(titleTargets,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            stagger: 0.2,
+            ease: "power4.out"
+          },
+          "-=0.4"
+        );
+      }
 
       // Heading animation
-      tl.fromTo(headingRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.4"
-      );
+      if (headingRef.current) {
+        tl.fromTo(headingRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
 
       // Image animation with shape reveal and scale
-      tl.fromTo(imageRef.current,
-        {
-          opacity: 0,
-          scale: 0.9,
-          rotation: 2
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          rotation: 0,
-          duration: 1.4,
-          ease: "power3.out"
-        },
-        "-=0.6"
-      );
+      if (imageRef.current) {
+        tl.fromTo(imageRef.current,
+          {
+            opacity: 0,
+            scale: 0.9,
+            rotation: 2
+          },
+          {
+            opacity: 1,
+            scale: 1,
+            rotation: 0,
+            duration: 1.4,
+            ease: "power3.out"
+          },
+          "-=0.6"
+        );
+      }
 
       // Description animation with fade and slide
-      tl.fromTo(descriptionRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.6"
-      );
+      if (descriptionRef.current) {
+        tl.fromTo(descriptionRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.6"
+        );
+      }
 
       // Stats animation with scale and stagger
-      const validStats = statsRef.current.filter(el => el);
-      if (validStats.length > 0) {
-        tl.fromTo(validStats,
+      const filteredStats = statsRef.current.filter(Boolean);
+      if (filteredStats.length > 0) {
+        tl.fromTo(filteredStats,
           { scale: 0.5, opacity: 0 },
           {
             scale: 1,
@@ -118,30 +111,25 @@ const About = () => {
       }
 
       // Border line animation
-      tl.fromTo(borderLineRef.current,
-        { scaleX: 0, opacity: 0 },
-        { scaleX: 1, opacity: 1, duration: 1, ease: "power3.out" },
-        "-=0.2"
-      );
+      if (borderLineRef.current) {
+        tl.fromTo(borderLineRef.current,
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 1, duration: 1, ease: "power3.out" },
+          "-=0.2"
+        );
+      }
 
       // CTA button animation
-      tl.fromTo(ctaRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "back.out(1.2)" },
-        "-=0.2"
-      );
-
-      // Continuous floating animation for badge
-      gsap.to(badgeRef.current, {
-        y: -5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut"
-      });
+      if (ctaRef.current) {
+        tl.fromTo(ctaRef.current,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, ease: "back.out(1.2)" },
+          "-=0.2"
+        );
+      }
 
       // Subtle pulse animation for stats on hover
-      validStats.forEach(stat => {
+      filteredStats.forEach(stat => {
         stat.addEventListener('mouseenter', () => {
           gsap.to(stat, {
             scale: 1.1,
@@ -180,7 +168,7 @@ const About = () => {
       });
 
       // Subtle floating animation for image (only on desktop)
-      if (window.innerWidth >= 1024) {
+      if (window.innerWidth >= 1024 && imageRef.current) {
         gsap.to(imageRef.current, {
           y: 8,
           duration: 3,
@@ -193,9 +181,15 @@ const About = () => {
 
     return () => {
       ctx.revert();
-      window.removeEventListener('resize', updateClipPath);
     };
+  }, [mounted]);
+
+  // Initial mount trigger
+  useEffect(() => {
+    setMounted(true);
   }, []);
+
+
 
   return (
     <section ref={sectionRef} className="relative py-24 bg-white overflow-hidden">
@@ -211,41 +205,44 @@ const About = () => {
             className="inline-flex items-center bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-full px-5 py-2.5 mb-6 shadow-lg"
           >
             <Zap className="w-4 h-4 mr-2" />
-            <span className="text-sm font-manrope font-medium tracking-wide">ABOUT RIDEN TECH</span>
+            <span className="text-sm font-manrope font-medium tracking-wide">WHO WE ARE</span>
           </div>
 
-          {/* Titles with animation */}
-          <h2 ref={titleRef} className="font-manrope text-5xl md:text-6xl text-gray-900 mb-4">
+          <h2
+            ref={titleRef}
+            className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-2"
+          >
             We're on a Mission to
           </h2>
-          <h2 ref={subtitleRef} className="font-manrope text-5xl md:text-6xl text-gray-900 mb-6">
-            <span className="relative">
-              Transform Digital
-            </span>
+          <h2
+            ref={subtitleRef}
+            className="font-manrope font-bold text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-6"
+          >
+            Transform <span className="text-gray-400 ">Digital</span>
           </h2>
 
           {/* Heading with animation */}
-          <p ref={headingRef} className="font-instrument text-xl text-gray-600 max-w-2xl mx-auto">
-            We're not just developers — we're partners in your success, bringing together
-            strategy, design, and technology to create exceptional digital experiences.
+          <p ref={headingRef} className="font-instrument text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            We’re a tight-knit team of creators, thinkers, and problem-solvers passionate about turning your ideas into powerful digital solutions.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Side - Image with Responsive Clip Path */}
-          <div className="relative order-2 lg:order-1">
-            <div className="relative h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] w-full max-w-[320px] sm:max-w-[450px] md:max-w-[550px] lg:max-w-[600px] mx-auto">
+          <div className="relative order-2 md:order-1">
+            <div className="relative w-full max-w-[320px] sm:max-w-[450px] md:max-w-[550px] lg:max-w-[600px] aspect-[1.1/1] mx-auto">
               <div
                 ref={imageRef}
                 className="absolute inset-0 w-full h-full shadow-2xl"
                 style={{
-                  clipPath: clipPath,
+                  clipPath: 'url(#aboutClipPath)',
+                  WebkitClipPath: 'url(#aboutClipPath)',
                 }}
               >
                 <div
                   className="w-full h-full bg-cover bg-center"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+                    backgroundImage: "url('/about.jpg')"
                   }}
                 ></div>
               </div>
@@ -253,52 +250,85 @@ const About = () => {
           </div>
 
           {/* Right Side - Content */}
-          <div className="order-1 lg:order-2 space-y-8">
+          <div className="order-1 md:order-2 space-y-6">
             {/* Description Text */}
             <div ref={descriptionRef} className="space-y-4">
               <p className="font-instrument text-lg text-gray-600 leading-relaxed">
-                With over years of experience, Riden Tech is a passionate, driven, and attentive team
-                offering creative talent and technical expertise. We specialize in transforming complex
-                challenges into seamless digital solutions that resonate with users and drive business growth.
+                At RidenTech, we believe great software is built through strong collaboration. Our team combines technical expertise with creative problem-solving to deliver solutions that aren’t just functional they’re exceptional.
               </p>
               <p className="font-instrument text-lg text-gray-600 leading-relaxed">
-                Our attentive team offers creative talent and expert technical skills, ensuring every project
-                we undertake exceeds expectations and delivers measurable results.
+                We take the time to understand your vision, challenges, and goals. Then we get to work, building high-quality products that create real impact for your business.
               </p>
             </div>
 
-            {/* Stats Row with hover animations */}
-            <div className="grid grid-cols-3 gap-4">
-              <div ref={el => statsRef.current[0] = el} className="text-center cursor-pointer">
-                <div className="font-manrope text-3xl text-gray-900">50+</div>
-                <div className="font-instrument text-xs text-gray-500">Team Members</div>
+            {/* Stats Row - Icons only (as requested) */}
+            <div className="grid grid-cols-3 gap-3 pt-4">
+              {/* Expert Team */}
+              <div
+                ref={el => statsRef.current[0] = el}
+                className="text-center cursor-pointer group"
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-2xl mb-3 group-hover:scale-110 transition-transform duration-300 mx-auto">
+                  <Users className="w-8 h-8 text-black" />
+                </div>
+                <div className="font-manrope text-sm font-semibold text-gray-900">EXPERT TEAM</div>
+                <div className="font-instrument text-xs text-gray-500 mt-1">Skilled professionals</div>
               </div>
-              <div ref={el => statsRef.current[1] = el} className="text-center cursor-pointer">
-                <div className="font-manrope text-3xl text-gray-900">200+</div>
-                <div className="font-instrument text-xs text-gray-500">Projects Done</div>
+
+              {/* Fast Delivery */}
+              <div
+                ref={el => statsRef.current[1] = el}
+                className="text-center cursor-pointer group"
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-2xl mb-3 group-hover:scale-110 transition-transform duration-300 mx-auto">
+                  <Rocket className="w-8 h-8 text-black" />
+                </div>
+                <div className="font-manrope text-sm font-semibold text-gray-900">FAST DELIVERY</div>
+                <div className="font-instrument text-xs text-gray-500 mt-1">Quick turnaround</div>
               </div>
-              <div ref={el => statsRef.current[2] = el} className="text-center cursor-pointer">
-                <div className="font-manrope text-3xl text-gray-900">98%</div>
-                <div className="font-instrument text-xs text-gray-500">Happy Clients</div>
+
+              {/* Client Satisfaction */}
+              <div
+                ref={el => statsRef.current[2] = el}
+                className="text-center cursor-pointer group"
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-2xl mb-3 group-hover:scale-110 transition-transform duration-300 mx-auto">
+                  <Star className="w-8 h-8 text-black" />
+                </div>
+                <div className="font-manrope text-sm font-semibold text-gray-900">SATISFACTION</div>
+                <div className="font-instrument text-xs text-gray-500 mt-1">Happy clients</div>
               </div>
             </div>
 
-            {/* Border Line with animation */}
-            <div ref={borderLineRef} className="w-full h-px bg-gray-200 origin-left"></div>
+            {/* Divider Line */}
+            <div
+              ref={borderLineRef}
+              className="w-full h-px bg-gray-200 transform origin-left"
+            ></div>
 
             {/* CTA with animation */}
             <div ref={ctaRef} className="pt-2">
               <Link
-                href="/about"
+                to="/about"
                 className="group inline-flex items-center space-x-2 bg-gray-900 text-white px-8 py-4 rounded-lg text-sm font-medium hover:bg-gray-800 transition-all duration-300 hover:shadow-lg font-manrope"
               >
-                <span>More About Us</span>
+                <span>Learn More About Us</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
         </div>
+
       </div>
+
+      {/* Responsive SVG ClipPath Definition (Same as Hero for consistency or adjusted) */}
+      <svg className="absolute w-0 h-0" aria-hidden="true">
+        <defs>
+          <clipPath id="aboutClipPath" clipPathUnits="objectBoundingBox">
+            <path d="M 0.037 0.082 L 0.37 0.082 A 0.037 0.041 0 0 0 0.407 0.041 L 0.407 0.041 A 0.037 0.041 0 0 1 0.444 0 L 0.963 0 A 0.037 0.041 0 0 1 1 0.041 L 1 0.959 A 0.037 0.041 0 0 1 0.963 1 L 0.037 1 A 0.037 0.041 0 0 1 0 0.959 L 0 0.122 A 0.037 0.041 0 0 1 0.037 0.082 Z" />
+          </clipPath>
+        </defs>
+      </svg>
     </section>
   );
 };

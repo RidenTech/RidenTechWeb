@@ -1,7 +1,4 @@
-// components/VideoSection.jsx
-"use client";
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { Zap, Play, ArrowRight } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -201,12 +198,10 @@ const ImageSection = () => {
           }}
         >
           {/* Image - Web Dev/Office related */}
-          <Image
+          <img
             src="https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
             alt="Modern office workspace with developers"
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-            priority
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
 
           {/* Dark overlay */}

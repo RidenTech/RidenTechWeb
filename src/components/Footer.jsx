@@ -1,8 +1,5 @@
-// components/Footer.jsx
-"use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Mail, Phone, MapPin, Send, Sparkles } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -20,7 +17,9 @@ export default function Footer() {
   const bigLogoRef = useRef(null);
   const privacyLinksRef = useRef(null);
   const currentYear = new Date().getFullYear();
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
+  const navigate = useNavigate();
 
   const [mounted, setMounted] = useState(false);
 
@@ -38,8 +37,12 @@ export default function Footer() {
       privacyLinksRef.current,
     ].filter(Boolean);
 
-    gsap.set(revealTargets, { opacity: 0, y: 35 });
-    gsap.set(bigLogoRef.current, { opacity: 0, y: 20 });
+    if (revealTargets.length > 0) {
+      gsap.set(revealTargets, { opacity: 0, y: 35 });
+    }
+    if (bigLogoRef.current) {
+      gsap.set(bigLogoRef.current, { opacity: 0, y: 20 });
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -54,13 +57,15 @@ export default function Footer() {
               ease: "power3.out",
             });
             // Big logo fades in last
-            gsap.to(bigLogoRef.current, {
-              opacity: 1,
-              y: 0,
-              duration: 1.2,
-              delay: 0.4,
-              ease: "power4.out",
-            });
+            if (bigLogoRef.current) {
+              gsap.to(bigLogoRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                delay: 0.4,
+                ease: "power4.out",
+              });
+            }
             // Ambient sparkle pulse
             gsap.to(".sparkle-icon", {
               scale: 1.1,
@@ -72,14 +77,16 @@ export default function Footer() {
               delay: 0.8,
             });
             // Ambient logo pulse
-            gsap.to(bigLogoRef.current, {
-              scale: 1.03,
-              duration: 4,
-              repeat: -1,
-              yoyo: true,
-              ease: "sine.inOut",
-              delay: 1.5,
-            });
+            if (bigLogoRef.current) {
+              gsap.to(bigLogoRef.current, {
+                scale: 1.03,
+                duration: 4,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: 1.5,
+              });
+            }
             observer.disconnect();
           }
         });
@@ -96,6 +103,31 @@ export default function Footer() {
     };
   }, [mounted, pathname]);
 
+  // Function to handle service navigation (same as in Navbar)
+  const handleServiceNavigation = (e, href, serviceTitle) => {
+    e.preventDefault();
+
+    // Create a URL-friendly ID from the service title
+    const serviceId = serviceTitle.toLowerCase()
+      .replace(/[&]/g, 'and')
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-');
+
+    // If we're already on the services page, just scroll
+    if (pathname === '/services') {
+      setTimeout(() => {
+        const element = document.getElementById(serviceId);
+        if (element) {
+          const yOffset = -100;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // Navigate to services page with hash
+      navigate(`/services#${serviceId}`);
+    }
+  };
 
   // Hover handlers for social icons
   const handleSocialEnter = (e) => {
@@ -156,6 +188,26 @@ export default function Footer() {
     });
   };
 
+  // Services data - 6 main services (matching your SERVICES array in Services.jsx)
+  const services = [
+    { name: "Custom Software Development", href: "/services", id: "custom-software-development" },
+    { name: "Web & PWA Engineering", href: "/services", id: "web-pwa-engineering" },
+    { name: "Mobile App Development", href: "/services", id: "mobile-app-development" },
+    { name: "API & Systems Integration", href: "/services", id: "api-systems-integration" },
+    { name: "AI & Machine Learning", href: "/services", id: "ai-machine-learning" },
+    { name: "Cloud Architecture", href: "/services", id: "cloud-architecture" }
+  ];
+
+  // Industries data - 8 industries (matching your industries array in Industries page)
+  const industries = [
+    { name: "Healthcare & Life Sciences", href: "/industries/healthcare-life-sciences" },
+    { name: "Finance & Legal", href: "/industries/finance-legal" },
+    { name: "Retail & E-Commerce", href: "/industries/retail-ecommerce" },
+    { name: "Education & EdTech", href: "/industries/education-edtech" },
+    { name: "Real Estate & Construction", href: "/industries/real-estate-construction" },
+    { name: "Non-Profit & Government", href: "/industries/non-profit-government" }
+  ];
+
   if (!mounted) return (
     <footer
       ref={footerRef}
@@ -200,7 +252,7 @@ export default function Footer() {
                   <Sparkles className="sparkle-icon w-5 h-5 text-gray-200" />
                   <span className="font-['Manrope'] text-xs text-gray-100 tracking-wider">NEWSLETTER</span>
                 </div>
-                <h2 className="font-['Manrope'] font-bold text-3xl md:text-4xl lg:text-5xl text-white leading-tight">
+                <h2 className="font-['Manrope'] font-bold text-2xl md:text-3xl lg:text-4xl text-white leading-tight">
                   Get the latest tips for social media growth and marketing straight to your inbox!
                 </h2>
               </div>
@@ -223,104 +275,109 @@ export default function Footer() {
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                   </button>
                 </div>
-                <p className="font-['Manrope'] text-xs text-gray-300 mt-4">
-                  No spam. Unsubscribe anytime.
-                </p>
               </div>
             </div>
           </div>
 
-          {/* Links Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8 mb-16">
-            {/* Site Map */}
+          {/* Links Grid - 4 Columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            {/* Column 1: Quick Links */}
             <div ref={el => columnsRef.current[0] = el} className="space-y-4">
-              <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider">SITE MAP</h3>
+              <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider uppercase">QUICK LINKS</h3>
               <ul className="space-y-2">
-                {['Home', 'Services', 'Pricing', 'Blogs', 'Projects'].map((item) => (
-                  <li key={item}>
+                {[
+                  { name: 'Home', href: '/' },
+                  { name: 'About', href: '/about' },
+                  { name: 'Services', href: '/services' },
+                  { name: 'Industries', href: '/industries' },
+                  { name: 'Blogs', href: '/blogs' },
+                  { name: 'Contact', href: '/contact' }
+                ].map((item) => (
+                  <li key={item.name}>
                     <Link
-                      href={`/${item.toLowerCase()}`}
+                      to={item.href}
                       onMouseEnter={handleLinkEnter}
                       onMouseLeave={handleLinkLeave}
                       className="footer-link font-['Manrope'] text-gray-400 hover:text-white transition-colors duration-300 text-sm inline-block"
                     >
-                      {item}
+                      {item.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Support */}
+            {/* Column 2: Services - 6 main services (with hash navigation) */}
             <div ref={el => columnsRef.current[1] = el} className="space-y-4">
-              <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider">SUPPORT</h3>
+              <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider uppercase">Services</h3>
               <ul className="space-y-2">
-                {['Contact Us', 'About Us', 'Team Member', 'Login Now', 'Register Now'].map((item) => (
-                  <li key={item}>
-                    <Link
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                {services.map((service) => (
+                  <li key={service.name}>
+                    <a
+                      href={`/services#${service.id}`}
+                      onClick={(e) => handleServiceNavigation(e, service.href, service.name)}
                       onMouseEnter={handleLinkEnter}
                       onMouseLeave={handleLinkLeave}
-                      className="footer-link font-['Manrope'] text-gray-400 hover:text-white transition-colors duration-300 text-sm inline-block"
+                      className="footer-link font-['Manrope'] text-gray-400 hover:text-white transition-colors duration-300 text-sm inline-block cursor-pointer"
                     >
-                      {item}
-                    </Link>
+                      {service.name}
+                    </a>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Utilities */}
+            {/* Column 3: Industries - 8 industries (with proper links) */}
             <div ref={el => columnsRef.current[2] = el} className="space-y-4">
-              <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider">UTILITIES</h3>
+              <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider uppercase">Industries</h3>
               <ul className="space-y-2">
-                {['Licensing', 'Style Guide', 'Changelog', 'Instructions', '404 Not Found'].map((item) => (
-                  <li key={item}>
+                {industries.map((industry) => (
+                  <li key={industry.name}>
                     <Link
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                      to={industry.href}
                       onMouseEnter={handleLinkEnter}
                       onMouseLeave={handleLinkLeave}
                       className="footer-link font-['Manrope'] text-gray-400 hover:text-white transition-colors duration-300 text-sm inline-block"
                     >
-                      {item}
+                      {industry.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Contact Info */}
+            {/* Column 4: Contact Info */}
             <div ref={el => columnsRef.current[3] = el} className="space-y-4">
               <h3 className="font-['Manrope'] text-gray-200 text-xs tracking-wider">CONTACT US</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3 group">
                   <Phone className="w-4 h-4 text-gray-100 flex-shrink-0 transition-transform duration-300 group-hover:rotate-12" />
                   <a
-                    href="tel:+91123456789"
+                    href="tel:+17787704050"
                     onMouseEnter={handleLinkEnter}
                     onMouseLeave={handleLinkLeave}
                     className="footer-link font-['Manrope'] text-gray-300 hover:text-white transition-colors duration-300 text-sm"
                   >
-                    +91 123 456789
+                    +1 778 770 4050
                   </a>
                 </div>
 
                 <div className="flex items-center gap-3 group">
                   <Mail className="w-4 h-4 text-gray-100 flex-shrink-0 transition-transform duration-300 group-hover:rotate-12" />
                   <a
-                    href="mailto:hello@domain.com"
+                    href="mailto:team@riden.tech"
                     onMouseEnter={handleLinkEnter}
                     onMouseLeave={handleLinkLeave}
                     className="footer-link font-['Manrope'] text-gray-300 hover:text-white transition-colors duration-300 text-sm"
                   >
-                    hello@domain.com
+                    team@riden.tech
                   </a>
                 </div>
 
                 <div className="flex items-start gap-3 group">
                   <MapPin className="w-4 h-4 text-gray-100 flex-shrink-0 mt-1 transition-transform duration-300 group-hover:rotate-12" />
                   <span className="font-['Manrope'] text-gray-300 text-sm">
-                    Springfield 1234 Elmwood Street, IL 62701 USA
+                    15850 26 Ave, Surrey, BC V3Z 2N6, Canada
                   </span>
                 </div>
               </div>
@@ -340,7 +397,7 @@ export default function Footer() {
                 className="flex items-center gap-6"
               >
                 <Link
-                  href="/privacy"
+                  to="/privacy"
                   onMouseEnter={handleLinkEnter}
                   onMouseLeave={handleLinkLeave}
                   className="footer-link font-['Manrope'] text-xs text-gray-400 hover:text-white transition-colors duration-300 pointer-events-auto"
@@ -348,7 +405,7 @@ export default function Footer() {
                   Privacy
                 </Link>
                 <Link
-                  href="/terms"
+                  to="/terms"
                   onMouseEnter={handleLinkEnter}
                   onMouseLeave={handleLinkLeave}
                   className="footer-link font-['Manrope'] text-xs text-gray-400 hover:text-white transition-colors duration-300 pointer-events-auto"
@@ -356,7 +413,7 @@ export default function Footer() {
                   Terms
                 </Link>
                 <Link
-                  href="/sitemap"
+                  to="/sitemap"
                   onMouseEnter={handleLinkEnter}
                   onMouseLeave={handleLinkLeave}
                   className="footer-link font-['Manrope'] text-xs text-gray-400 hover:text-white transition-colors duration-300 pointer-events-auto"

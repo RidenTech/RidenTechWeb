@@ -1,5 +1,4 @@
 // components/MarqueeService.jsx (Simplified)
-"use client";
 import { useEffect, useRef } from "react";
 import { ArrowRight, Star } from "lucide-react";
 
@@ -18,7 +17,7 @@ const MarqueeService = () => {
       if (!startTime) startTime = currentTime;
       const elapsed = currentTime - startTime;
       const translateX = -(25 + (elapsed * speed) % 25);
-      
+
       marquee.style.transform = `translate3d(${translateX}%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)`;
 
       animationRef.current = requestAnimationFrame(animate);
@@ -36,7 +35,7 @@ const MarqueeService = () => {
   const items = [
     "Web Design",
     "UI/UX Design",
-    "Product Design", 
+    "Product Design",
     "Digital Marketing",
     "Brand Strategy",
     "Mobile Development"
@@ -44,9 +43,9 @@ const MarqueeService = () => {
 
   return (
     <section className="w-full bg-black py-2 overflow-hidden">
-   
+
       <div className="relative overflow-hidden">
-        <div 
+        <div
           ref={marqueeRef}
           className="flex whitespace-nowrap will-change-transform"
           style={{ transformStyle: 'preserve-3d' }}
@@ -63,13 +62,13 @@ const MarqueeService = () => {
                         {item}
                       </span>
                     </div>
-                    
-                    
-                    
-                    </div>
-                   <div className="bg-white/10  border-white/20  backdrop-blur-sm border -rotate-45  rounded-full p-4">
-                        <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                      </div>
+
+
+
+                  </div>
+                  <div className="bg-white/10  border-white/20  backdrop-blur-sm border -rotate-45  rounded-full p-4">
+                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                  </div>
 
                   {/* Star separator */}
                   <Star className="w-4 h-4 md:w-5 md:h-5 text-white/40 mx-4 md:mx-6" />
